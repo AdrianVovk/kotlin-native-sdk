@@ -7,6 +7,7 @@ fun main(args: Array<String>) {
 class App {
 	init {
 		info("Starting Up", tag = "Overriding Broken Reflection System")
-		fatal("That's all, folks")	
+		debug("Testing Debug")
+		fatal("Crashing Now", code = 9)
 	}	
 }
