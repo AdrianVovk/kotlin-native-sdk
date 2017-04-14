@@ -11,7 +11,6 @@ buildTime() {
    echo
 }
 
-
 if [ -a gtk.kt.bc ]; then
    read -p "Rebuild GTK+ library (y/n)? " choice
    case "$choice" in
