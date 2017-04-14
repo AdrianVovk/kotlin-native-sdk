@@ -1,7 +1,11 @@
+# Ignore potential installation of Kotlin/Native or Dokka
 bin/
+dokka-fatjar.jar
 
+
+# Ignore out folder
 out/*
 !out/.keep
 
-dokka-fatjar.jar
+# Ignore all compiled libraries
 *.kt.bc*
