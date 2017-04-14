@@ -4,3 +4,4 @@ out/*
 !out/.keep
 
 dokka-fatjar.jar
+*.kt.bc*

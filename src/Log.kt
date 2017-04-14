@@ -1,6 +1,7 @@
 package sdk.util.log
 
 import sdk.System
+import sdk.util.Date
 
 /**
  * A delegate for creating a [Logger] for a given class.
@@ -78,7 +79,7 @@ val Any.fullNameTag: String
  *
  * @author Adrian Vovk
  */
-fun Any.verbose(msg: String, tag: String = defaultTag) = println("[VERBOSE - $tag] (DATE): $msg")
+fun Any.verbose(msg: String, tag: String = defaultTag) = println("[VERBOSE - $tag] (${Date()}): $msg")
 
 /**
  * Used to log verbose information into STDOUT
@@ -97,7 +98,7 @@ fun Any.verbose(msg: String, tag: String = defaultTag) = println("[VERBOSE - $ta
  * @author Adrian Vovk
  */
 fun Any.error(msg: String, exception: Exception? = null, tag: String = defaultTag) {
-  println("\u001B[31m[ERROR - $tag] (DATE): $msg\u001B[0m")
+  println("\u001B[31m[ERROR - $tag] (${Date()}): $msg\u001B[0m")
   exception?.printStackTrace()
 }
 
@@ -118,7 +119,7 @@ fun Any.error(msg: String, exception: Exception? = null, tag: String = defaultTa
  *
  * @author Adrian Vovk
  */
-fun Any.info(msg: String, tag: String = defaultTag) = println("[INFO - $tag] (DATE): $msg")
+fun Any.info(msg: String, tag: String = defaultTag) = println("[INFO - $tag] (${Date()}): $msg")
 
 /**
  * Used to log debug information into STDOUT
@@ -139,12 +140,12 @@ fun Any.info(msg: String, tag: String = defaultTag) = println("[INFO - $tag] (DA
  *
  * @author Adrian Vovk
  */
-fun Any.debug(msg: String, tag: String = defaultTag) = println("[DEBUG - $tag] (DATE): $msg")
+fun Any.debug(msg: String, tag: String = defaultTag) = println("[DEBUG - $tag] (${Date()}): $msg")
 
-fun Any.critical(msg: String, tag: String = defaultTag) = println("\u001B[31m[CRITICAL - $tag] (DATE): $msg\u001B[0m")
+fun Any.critical(msg: String, tag: String = defaultTag) = println("\u001B[31m[CRITICAL - $tag] (${Date()}): $msg\u001B[0m")
 
 fun Any.fatal(msg: String, exception: Exception? = null, tag: String = defaultTag, code: Int = 1) {
-  println("\u001B[31m[FATAL - $tag] (DATE): $msg\u001B[0m")
+  println("\u001B[31m[FATAL - $tag] (${Date()}): $msg\u001B[0m")
   exception?.printStackTrace()
 
   System.exit(code)
