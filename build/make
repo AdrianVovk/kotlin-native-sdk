@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 buildGTK() {
-   #(cd libs; cinterop -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
-   #echo
-   test
+   (cd libs; cinterop -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
+   echo
 }
 
 buildTime() {
