@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 buildGTK() {
-   #cinterop -def ./gtk.def -pkg gtk -o gtk.kt.bc || exit 1
+   #(cd libs; cinterop -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
    #echo
    test
 }
 
 buildTime() {
-   cinterop -def ./time.def -pkg time -o time.kt.bc || exit 1
+   (cd libs; cinterop -def ./time.def -pkg time -o time.kt.bc) || exit 1
    echo
 }
 
-if [ -a gtk.kt.bc ]; then
+if [ -a libs/gtk.kt.bc ]; then
    read -p "Rebuild GTK+ library (y/n)? " choice
    case "$choice" in
      y|Y ) buildGTK ;;
@@ -21,7 +21,7 @@ else
    buildGTK
 fi
 
-if [ -a time.kt.bc ]; then
+if [ -a libs/time.kt.bc ]; then
    read -p "Rebuild Time library (y/n)? " choice
    case "$choice" in
      y|Y ) buildTime ;;
@@ -33,7 +33,7 @@ else
 fi
 
 echo "Building src/ and including libraries"
-kotlinc-native src/ -library time.kt.bc -o out/test -opt || exit 1
+kotlinc-native src/ -library libs/time.kt.bc -o out/test -opt || exit 1
 
 echo
 read -p "Done building. Run (y/n)? " choice
