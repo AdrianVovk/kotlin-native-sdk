@@ -32,7 +32,7 @@ else
 fi
 
 echo "Building src/ and including libraries"
-kotlinc-native src/ -library libs/time.kt.bc -o out/test -opt || exit 1
+kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -o out/test -opt || exit 1
 
 echo
 read -p "Done building. Run (y/n)? " choice

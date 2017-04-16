@@ -1,1 +1,2 @@
 headers = time.h
+includedFunctions = ctime time
