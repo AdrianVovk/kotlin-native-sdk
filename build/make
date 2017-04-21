@@ -31,8 +31,10 @@ else
    buildTime
 fi
 
+LINKER_ARGS_macbook="-L/opt/local/lib -lglib-2.0 -lgdk-3.0 -lgtk-3 -lgio-2.0 -lgobject-2.0"
+LINKER_ARGS_linux="-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0"
 echo "Building src/ and including libraries"
-kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -o out/test -opt || exit 1
+kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -linkerArgs "$LINKER_ARGS_linux" -o out/test -opt || exit 1
 
 echo
 read -p "Done building. Run (y/n)? " choice
