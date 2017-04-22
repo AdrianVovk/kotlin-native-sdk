@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
+# Library Build Commands
+
 buildGTK() {
-   (cd libs; cinterop -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
-   echo
+	(cd libs; cinterop -J-Xmx8g  -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
+	echo
 }
 
 buildTime() {
-   (cd libs; cinterop -def ./time.def -pkg time -o time.kt.bc) || exit 1
-   echo
+	(cd libs; cinterop -def ./time.def -pkg time -o time.kt.bc) || exit 1
+	echo
 }
+
+buildStdlib() {
+	(cd libs; cinterop -def ./stdlib.def -pkg c.stdlib -o stdlib.kt.bc) || exit 1
+	echo
+}
+
+# Library Builds
 
 if [ -a libs/gtk.kt.bc ]; then
    read -p "Rebuild GTK+ library (y/n)? " choice
@@ -26,15 +35,41 @@ if [ -a libs/time.kt.bc ]; then
      y|Y ) buildTime ;;
      * ) echo "Skipping Time rebuild" ;;
    esac
-   echo
 else
    buildTime
 fi
 
+if [ -a libs/stdlib.kt.bc ]; then
+   read -p "Rebuild standard library (y/n)? " choice
+   case "$choice" in
+     y|Y ) buildStdlib ;;
+     * ) echo "Skipping Stdlib rebuild" ;;
+   esac
+   echo
+else
+   buildStdlib
+fi
+
+# Linker and OS Detection
+
 LINKER_ARGS_macbook="-L/opt/local/lib -lglib-2.0 -lgdk-3.0 -lgtk-3 -lgio-2.0 -lgobject-2.0"
 LINKER_ARGS_linux="-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0"
+
+if [ x$TARGET == x ]; then
+case "$OSTYPE" in
+  darwin*)  TARGET=macbook ;;
+  linux*)   TARGET=linux ;;
+  *)        echo "unknown: $OSTYPE" && exit 1;;
+esac
+fi
+
+var=LINKER_ARGS_${TARGET}
+LINKER_ARGS=${!var}
+
+# Run Compiler
+
 echo "Building src/ and including libraries"
-kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -linkerArgs "$LINKER_ARGS_linux" -o out/test -opt || exit 1
+kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -library libs/stdlib.kt.bc -linkerArgs "$LINKER_ARGS_linux" -target $TARGET -o out/test -opt || exit 1
 
 echo
 read -p "Done building. Run (y/n)? " choice
