@@ -25,7 +25,7 @@ abstract class Application(args: Array<String>, val id: String, val flags : GApp
 
 		info("Cleaning Up", tag = "SDK Application")
 		g_object_unref(app)
-		cleanup()r
+		cleanup()
 
 		info("Quitting with $status", tag = "SDK Application")
 		System.exit(status)

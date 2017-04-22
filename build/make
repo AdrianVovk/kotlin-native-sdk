@@ -3,16 +3,19 @@
 # Library Build Commands
 
 buildGTK() {
+	echo "Generating GTK Stubs. This will take a few minutes so feel free to grab a snack"
 	(cd libs; cinterop -J-Xmx8g  -def ./gtk.def -pkg gtk -o gtk.kt.bc) || exit 1
 	echo
 }
 
 buildTime() {
+	echo "Generating Time library stubs"
 	(cd libs; cinterop -def ./time.def -pkg time -o time.kt.bc) || exit 1
 	echo
 }
 
 buildStdlib() {
+	echo "Generating Standard library stubs"
 	(cd libs; cinterop -def ./stdlib.def -pkg c.stdlib -o stdlib.kt.bc) || exit 1
 	echo
 }
