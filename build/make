@@ -72,7 +72,7 @@ LINKER_ARGS=${!var}
 # Run Compiler
 
 echo "Building src/ and including libraries"
-kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -library libs/stdlib.kt.bc -linkerArgs "$LINKER_ARGS_linux" -target $TARGET -o out/test -opt || exit 1
+kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -library libs/stdlib.kt.bc -linkerArgs "$LINKER_ARGS_linux" -target $TARGET -o out/gtkdemo -opt || exit 1
 
 echo
 read -p "Done building. Run (y/n)? " choice
@@ -80,7 +80,7 @@ case "$choice" in
    y|Y)
    echo "Running"
    echo
-   ./out/test
+   ./out/gtkdemo
    ;;
    * ) echo "Not running compiled program. Exiting"
 esac

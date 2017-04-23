@@ -7,9 +7,9 @@ fun main(args: Array<String>) {
 	GtkDemoApp(args) // Start Program
 }
 
-class GtkDemoApp(args: Array<String>) : Application(args, "sdk.gtk.sample") {
-	override fun setup() = staticCFunction { app: CPointer<GtkApplication>?, user_data: gpointer? ->
-		Window(app) {
+class GtkDemoApp(args: Array<String>) : Application(args, "org.gtk.demo") {
+	override fun setup(app: CPointer<GtkApplication>?) {
+ 		Window(app) {
 			title = "GTK+ Demo"
 
 			val button_box = gtk_button_box_new(GtkOrientation.GTK_ORIENTATION_VERTICAL)!!
@@ -17,22 +17,23 @@ class GtkDemoApp(args: Array<String>) : Application(args, "sdk.gtk.sample") {
 
 			sDebug("Creating Buttons")
 			Button("Click here for some output") {
-				onClick(staticCFunction { widget: CPointer<GtkApplication>?, data: gpointer? ->
-					sInfo("Clicked", tag = "Button")
-	            } as GCallback)
+	          	onClick = {
+	          		info("Clicked", tag = "Button 1")
+	          	}
 				addTo(button_box)
 			}
 
 			Button() {
 				text = "Click here for some other output"
-				onClick(staticCFunction { widget: CPointer<GtkApplication>?, data: gpointer? ->
-						sInfo("Clicked", tag = "Button 2")
-				}  as GCallback )
+				onClick = {
+					info("Clicked", tag = "Button 2")
+				}
 				addTo(button_box)
 			}
 		}.show()
 	    //gtk_window_set_default_size(window, 200, 200)
 	}
+
 }
 
 ////////////////////////////////////////////////////////
