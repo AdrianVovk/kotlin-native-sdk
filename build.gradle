@@ -1,0 +1,50 @@
+// Include Kotlin/Native
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url  "https://dl.bintray.com/jetbrains/kotlin-native-dependencies"
+        }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:+"
+    }
+}
+
+apply plugin: 'konan'
+
+konanInterop { // Include C Libraries
+   gtk {
+      defFile 'libs/gtk.def'
+   }
+   
+   time {
+      defFile 'libs/time.def'
+   }
+   
+   stdlib {
+      defFile 'libs/stdlib.def'
+   }
+}
+
+konanArtifacts {
+  gtkDemo {
+    inputFiles project.file("src/*")
+    useInterop 
+  }
+}
+
+// Copy output to out/ folder
+build {
+  doLast {
+     getTaskDependencies().getDependencies().forEach() { task ->
+            if (task.name.startsWith("compileKonan")) {
+                copy {
+                    from task.artifactPath
+                    into projectDir.canonicalPath
+                }
+            }
+        }
+  }
+}
