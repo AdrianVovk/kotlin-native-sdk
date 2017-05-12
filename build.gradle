@@ -29,9 +29,15 @@ konanInterop { // Include C Libraries
 }
 
 konanArtifacts {
-  gtkDemo {
-    inputFiles project.file("src/*")
-    useInterop 
+  gtkDemo { // Main binary
+    inputDir "src/"
+    outputDir "out/"
+
+    useInterop "gtk"
+    useInterop "time"
+    useInterop "stdlib"
+    
+    enableOptimization
   }
 }
 
