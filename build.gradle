@@ -1,3 +1,5 @@
+apply from: 'build.gradle.kts' // Import the Kotlin gradle script. Eventually this will be the only thing in this file.
+
 // Include Kotlin/Native
 buildscript {
     repositories {
@@ -13,6 +15,7 @@ buildscript {
 }
 
 apply plugin: 'konan'
+outputFile = "${projectDir.canonicalPath}/out/${file(compileKonanGtkDemo.artifactPath).name}" // Where to output the binary
 
 konanInterop { // Include C Libraries
    gtk {
@@ -33,27 +36,33 @@ konanInterop { // Include C Libraries
 
 konanArtifacts {
   gtkDemo { // Main binary
-    inputDir "src/"
-    outputDir "out/"
+    inputDir "src/" // Include source directory
+    outputDir "out/" // Output to 'out/'
 
-    useInterop "gtk"
-    useInterop "time"
-    useInterop "stdlib"
+    useInterop "gtk" // Inlcude GTK
+    useInterop "time" // Include time library
+    useInterop "stdlib" // Include standard library
     
-    enableOptimization
+    //TODO: Merge `time` into `stdlib`
+    
+    enableOptimization // Make the binary smaller at the expense of compile time. Comment this out to build a slight bit faster
   }
 }
 
-// Copy output to out/ folder
+// HACK: Unnecessary because of `outputDir`
+// TODO: Check this
+// Copy output binary to out/ folder
+/*
 build {
-  doLast {
-     getTaskDependencies().getDependencies().forEach() { task ->
-            if (task.name.startsWith("compileKonan")) {
-                copy {
-                    from task.artifactPath
-                    into projectDir.canonicalPath
-                }
-            }
+    doLast {
+        copy {
+            from compileKonanGtkDemo.artifactPath
+            into projectDir.canonicalPath
         }
-  }
+    }
+}
+*/
+
+clean {
+    doLast { delete outputFile } // Delete the output file when cleaning the build
 }
