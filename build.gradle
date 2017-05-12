@@ -17,14 +17,17 @@ apply plugin: 'konan'
 konanInterop { // Include C Libraries
    gtk {
       defFile 'libs/gtk.def'
+      pkg "gtk"
    }
    
    time {
       defFile 'libs/time.def'
+      pkg "time"
    }
    
    stdlib {
       defFile 'libs/stdlib.def'
+      pkg "c.stdlib"
    }
 }
 
