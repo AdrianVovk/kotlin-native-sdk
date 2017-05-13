@@ -1,6 +1,7 @@
-package sdk
+package sdk.ui
 
 import sdk.util.log.*
+import sdk.args.*
 import sdk.System
 import gtk.*
 import kotlinx.cinterop.*
@@ -12,38 +13,58 @@ fun <F : CFunction<*>> g_signal_connect(obj: CPointer<*>, actionName: String,
             data = data, destroy_data = null, connect_flags = connect_flags)
 }
 
-fun <T> obtainInstance(pointer: CPointer<out CPointed>?) = StableObjPtr.fromValue(pointer as COpaquePointer).get() as T
+fun <T> obtainInstance(pointer: COpaquePointer? /* CPointer<out CPointed>? */) = StableObjPtr.fromValue(pointer!!).get() as T
 
-abstract class Application(args: Array<String>, val id: String, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
+abstract class Application(val execName: String, val args: Array<String>, val id: String, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
 	val ptr = StableObjPtr.create(this)
 
 	init {
-		info("Starting $id", tag = "SDK Application")
+		info("Starting $execName as $id", tag = "SDK Application")
 		val app = gtk_application_new(id, flags)!!
-		g_signal_connect(app, "activate",
-			staticCFunction { app: CPointer<GtkApplication>?, user_data: gpointer? ->
-				// This makes a pointer to call the setup function
-				val instance = obtainInstance<Application>(user_data)
-				instance.setup(app)
-			}, data = ptr.value)
 
-		verbose("Configured $id; Running", tag = "SDK Application")
-		val status = memScoped {
-			g_application_run(app.reinterpret(), args.size, args.map { it.cstr.getPointer(memScope) }.toCValues())
+		// Process arguments
+		val gtkargs = arrayOf(execName).union(args.asIterable()) // Needed to include basename for GTK to work
+		for (arg in supportedArgs()?.data ?: mutableListOf()) {
+			//TODO: Add support for passing data
+			g_application_add_main_option(app.reinterpret(),
+			   arg.longName,
+			   arg.shortName.toByte(),
+			   if (arg.optional) G_OPTION_FLAG_OPTIONAL_ARG else G_OPTION_FLAG_NONE,
+			   GOptionArg.G_OPTION_ARG_NONE,
+			   arg.desc,
+			   null)
 		}
 
-		info("Cleaning Up", tag = "SDK Application")
+
+		// Creating program initiaton
+		g_signal_connect(app, "activate",
+					staticCFunction { app: CPointer<GtkApplication>?, user_data: gpointer? ->
+						// This makes a pointer to call the setup function
+						val instance = obtainInstance<Application>(user_data)
+						instance.setup(app, ArgProcessor.from(instance.args))
+					}, data = ptr.value)
+
+		// Run program
+		verbose("Configured $execName; Running", tag = "SDK Application")
+		val status = memScoped {
+			g_application_run(app.reinterpret(), gtkargs.size, gtkargs.map { it.cstr.getPointer(memScope) }.toCValues())
+		}
+
+		// Cleanup
+		info("Cleaning Up $execName", tag = "SDK Application")
 		g_object_unref(app)
 		cleanup()
 		ptr.dispose()
 
-		info("Quitting with $status", tag = "SDK Application")
+		info("Quitting $execName with $status", tag = "SDK Application")
 		System.exit(status)
 	}
 
-	abstract fun setup(app: CPointer<GtkApplication>?) : Unit
+	abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
 
-	fun cleanup() {
+	open fun supportedArgs(): ArgConfig? = null
+
+	open fun cleanup() {
 		// Does nothing by default; for developer to implement if needed
 	}
 }

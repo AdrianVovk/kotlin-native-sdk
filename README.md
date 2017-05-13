@@ -1,4 +1,24 @@
 # Kotlin/Native SDK
-This repo shows off Kotlin/Native with a simple GTK Program
+This repo shows off Kotlin/Native and the Substance SDK with a simple GTK Program.
 
-To start, run `build/make` and follow the prompts. *The first build will take some time (6 minuts on a i7 6700) and requires a bit of RAM. Subsequent builds are much less intense (down to 9 seconds on the same CPU)*
+## Building
+You have two ways to build this:
+
+*__Note:__ The first build will take a few minutes and requires a bit of RAM. Subsequent builds require less ram and are faster*
+
+##### Gradle
+
+This uses the Kotlin/Native Gradle plugin to build the project.
+
+To build, run `./gradlew build`. The built binary will be placed in the `out/` folder.
+
+To clean the working directory, run `./gradlew clean`.
+
+*Depending on your configuration, it might be easier to replace `./gradlew` with `gradle`*
+
+##### Included Build script
+
+To build, run `tools/build` and follow the prompts. The builr binary will be placed in the	`out/` folder.
+Subsequent builds will ask if you want to rebuild the libraries. If you are experiencing issues with compilation, try answering `y` to these prompts.
+
+To clean the working directory, run `tools/clean`.
