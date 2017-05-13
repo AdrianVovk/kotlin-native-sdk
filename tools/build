@@ -10,7 +10,7 @@ buildGTK() {
 
 buildTime() {
 	echo "Generating Time library stubs"
-	(cd libs; cinterop -def ./time.def -pkg time -o time.kt.bc) || exit 1
+	(cd libs; cinterop -def ./time.def -pkg c.time -o time.kt.bc) || exit 1
 	echo
 }
 

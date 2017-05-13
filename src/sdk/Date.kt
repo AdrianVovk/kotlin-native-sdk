@@ -1,6 +1,6 @@
 package sdk.util
 
-import time.*
+import c.time.*
 import kotlinx.cinterop.cValuesOf
 import kotlinx.cinterop.toKString
 
