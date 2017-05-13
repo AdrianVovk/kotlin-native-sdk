@@ -23,7 +23,7 @@ buildStdlib() {
 # Library Builds
 
 if [ -a libs/gtk.kt.bc ]; then
-   read -p "Rebuild GTK+ library (y/n)? " choice
+   read -p "Rebuild GTK+ library (y/N)? " choice
    case "$choice" in
      y|Y ) buildGTK ;;
      * ) echo "Skipping GTK+ rebuild" ;;
@@ -33,7 +33,7 @@ else
 fi
 
 if [ -a libs/time.kt.bc ]; then
-   read -p "Rebuild Time library (y/n)? " choice
+   read -p "Rebuild Time library (y/N)? " choice
    case "$choice" in
      y|Y ) buildTime ;;
      * ) echo "Skipping Time rebuild" ;;
@@ -43,7 +43,7 @@ else
 fi
 
 if [ -a libs/stdlib.kt.bc ]; then
-   read -p "Rebuild standard library (y/n)? " choice
+   read -p "Rebuild standard library (y/N)? " choice
    case "$choice" in
      y|Y ) buildStdlib ;;
      * ) echo "Skipping Stdlib rebuild" ;;
@@ -75,7 +75,7 @@ echo "Building src/ and including libraries"
 kotlinc-native src/ -library libs/time.kt.bc -library libs/gtk.kt.bc -library libs/stdlib.kt.bc -linkerArgs "$LINKER_ARGS_linux" -target $TARGET -o out/gtkdemo -opt || exit 1
 
 echo
-read -p "Done building. Run (y/n)? " choice
+read -p "Done building. Run (y/N)? " choice
 case "$choice" in
    y|Y)
    echo "Running"
