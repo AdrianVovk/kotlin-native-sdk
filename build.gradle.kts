@@ -1,8 +1,5 @@
-import org.jetbrains.kotlin.gradle.plugin.KonanInteropContainer
-import org.jetbrains.kotlin.gradle.plugin.KonanInteropConfig
-import org.jetbrains.kotlin.gradle.plugin.KonanArtifactsContainer
-import org.jetbrains.kotlin.gradle.plugin.KonanCompilerConfig
-import org.jetbrains.kotlin.gradle.plugin.KonanPlugin
+// Import all of the Kotlin/Native gradle plugin configurations
+import org.jetbrains.kotlin.gradle.plugin.*
 
 // Include Kotlin/Native
 buildscript {
