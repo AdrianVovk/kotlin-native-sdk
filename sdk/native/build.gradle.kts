@@ -36,12 +36,19 @@ configure<KonanInteropContainer> {
 }
 
 configure<KonanArtifactsContainer> {
-	create("gtkdemo", closureOf<KonanCompilerConfig> {
+	create("sdk-library", closureOf<KonanCompilerConfig> {
 		inputDir("src/")
-		outputDir("../out/")
+		outputDir("../../out/")
 
-		library
+		// TODO: Get rid of GTK here - leave for Linux platform
+		useInterop("gtk")
+		linkerOpts("-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0")
 
+		useInterop("time")
+		useInterop("stdlib")
+
+		noMain() // Make sure this isn't executable
+		noLink() // Make this non-runabble
 		enableOptimization() // Make smaller binaries at expense of compile time
 	})
 }

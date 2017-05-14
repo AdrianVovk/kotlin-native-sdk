@@ -4,6 +4,8 @@ dokka-fatjar.jar
 
 # Ignore gradle files
 gradle.properties
+*/gradle.properties
+*/.gradle/
 .gradle/
 
 
@@ -14,3 +16,4 @@ out/*
 # Ignore all compiled binaries
 *.kt.bc*
 build/
+*/build/

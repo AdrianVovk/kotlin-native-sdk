@@ -5,7 +5,6 @@ import sdk.args.*
 import kotlinx.cinterop.*
 
 fun main(cmdline: Array<String>) {
-	println("TESTING")
 	GtkDemoApp("gtkdemo", cmdline) // Start Program
 }
 

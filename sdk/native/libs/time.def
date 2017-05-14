@@ -1,0 +1,4 @@
+# This def file includes the C Time library
+# It is used for the Date class in the SDK
+
+headers= time.h
