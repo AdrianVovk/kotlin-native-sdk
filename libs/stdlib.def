@@ -1,4 +1,0 @@
-# This def file is used to include the C standard library
-# This is used for application flow (System.exit)
-
-headers= stdlib.h
