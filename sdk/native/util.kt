@@ -1,8 +1,10 @@
 package sdk.util
 
-import c.time.*
-import kotlinx.cinterop.cValuesOf
-import kotlinx.cinterop.toKString
+import kotlinx.cinterop.*
+
+// C imports for Date class
+import c.time.time
+import c.time.ctime
 
 class Date {
 

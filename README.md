@@ -10,15 +10,15 @@ You have two ways to build this:
 
 This uses the Kotlin/Native Gradle plugin to build the project.
 
-To build, run `./gradlew build`. The built binary will be placed in the `out/` folder.
+To build, run `scripts/gradlew build`. The built binary will be placed in the `out/` folder.
 
-To clean the working directory, run `./gradlew clean`.
+To clean the working directory, run `scripts/gradlew clean`.
 
-*Depending on your configuration, it might be easier to replace `./gradlew` with `gradle`*
+*Depending on your configuration, it might be easier to replace `scripts/gradlew` with `gradle`*
 
 ##### Included Build script
 
-To build, run `tools/build` and follow the prompts. The builr binary will be placed in the	`out/` folder.
+To build, run `scripts/build` and follow the prompts. The builr binary will be placed in the	`out/` folder.
 Subsequent builds will ask if you want to rebuild the libraries. If you are experiencing issues with compilation, try answering `y` to these prompts.
 
-To clean the working directory, run `tools/clean`.
+To clean the working directory, run `scripts/clean`.
