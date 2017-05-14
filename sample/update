@@ -1,0 +1,11 @@
+#/usr/bin/env bash
+
+echo Updating links to projects
+
+rm -rf hack/
+mkdir hack
+mkdir hack/sdk
+mkdir hack/app
+
+ln src/* hack/app
+ln ../sdk/native/src/* hack/sdk

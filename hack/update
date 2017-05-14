@@ -1,9 +1,0 @@
-#/usr/bin/env bash
-
-rm -rf src/
-mkdir src
-mkdir src/sdk
-mkdir src/app
-
-ln ../sample/src/* src/app
-ln ../sdk/native/src/* src/sdk

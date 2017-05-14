@@ -2,11 +2,10 @@ import sdk.util.log.*
 import gtk.*
 import sdk.ui.*
 import sdk.args.*
+import sdk.System
 import kotlinx.cinterop.*
 
-fun main(cmdline: Array<String>) {
-	GtkDemoApp("gtkdemo", cmdline) // Start Program
-}
+fun main(cmdline: Array<String>) { GtkDemoApp("gtkdemo", cmdline) }
 
 class GtkDemoApp(execName: String, cmdline: Array<String>) : Application(execName, cmdline, "org.gtk.demo") {
 

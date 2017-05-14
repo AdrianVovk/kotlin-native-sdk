@@ -1,5 +1,6 @@
 // Import all of the Kotlin/Native gradle plugin configurations
 import org.jetbrains.kotlin.gradle.plugin.*
+import org.gradle.api.tasks.Exec
 
 // Include Kotlin/Native
 buildscript {
@@ -37,7 +38,7 @@ configure<KonanInteropContainer> {
 
 configure<KonanArtifactsContainer> {
 	create("sample", closureOf<KonanCompilerConfig> {
-		inputDir("src/")
+		inputDir("hack/")
 		outputDir("../out/")
 
 		// TODO: Get rid of GTK here - leave for Linux platform
@@ -49,4 +50,9 @@ configure<KonanArtifactsContainer> {
 
 		enableOptimization() // Make smaller binaries at expense of compile time
 	})
+}
+
+task<Exec>("run") {
+	dependsOn("build")
+	commandLine("../out/sample.kexe")
 }

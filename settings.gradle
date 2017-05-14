@@ -1,3 +1,8 @@
-rootProject.buildFileName = 'build.gradle.kts'
-include 'sdk', 'sdk:native',
-	'sample', 'hack'
+include 'sdk', 'sdk:native', 'sdk:android', 'sdk:jvm', 'sdk:abstract',
+	'sample','gradle-plugin'
+
+def configureGradleScriptKotlinOn(ProjectDescriptor project) {
+     project.buildFileName = 'build.gradle.kts'
+     project.children.each { configureGradleScriptKotlinOn(it) }
+ }
+configureGradleScriptKotlinOn(rootProject)
