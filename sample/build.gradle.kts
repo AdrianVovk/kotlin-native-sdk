@@ -1,8 +1,10 @@
-// Import all of the Kotlin/Native gradle plugin configurations
+// KLib Workaround Gradle File
+//
+// This gradle file is temporary. This lets the user build the sample
+
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.gradle.api.tasks.Exec
 
-// Include Kotlin/Native
 buildscript {
     repositories {
         mavenCentral()
@@ -55,4 +57,12 @@ configure<KonanArtifactsContainer> {
 task<Exec>("run") {
 	dependsOn("build")
 	commandLine("../out/sample.kexe")
+}
+
+task<Exec>("update-sources") {
+	commandLine("./update-sources")
+}
+
+tasks.getByName("compileKonanSample") {
+	it.dependsOn("update-sources")
 }

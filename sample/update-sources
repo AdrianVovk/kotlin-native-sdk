@@ -1,6 +1,6 @@
 #/usr/bin/env bash
 
-echo Updating links to projects
+echo Setting up temporary compilation hack...
 
 rm -rf hack/
 mkdir hack
@@ -9,3 +9,5 @@ mkdir hack/app
 
 ln src/* hack/app
 ln ../sdk/native/src/* hack/sdk
+
+echo '`hack/` folder created. Continuing build'

@@ -1,5 +1,5 @@
-// Import all of the Kotlin/Native gradle plugin configurations
-import org.jetbrains.kotlin.gradle.plugin.*
+import org.jetbrains.kotlin.gradle.plugin.* // Import the Kotlin/Native plugin
+import org.gradle.api.tasks.Exec // This runs binaries
 
 // Include Kotlin/Native
 buildscript {
@@ -22,8 +22,14 @@ configure<KonanArtifactsContainer> {
 		inputDir("src/")
 		outputDir("../out/")
 
-		library("../out/sdk-library.bc") // NOT-WORKING: This doesn't work yet. Will eventually be implimented
+		//library(out/sdk.klib) //FUTURE: KLib support
 
 		enableOptimization() // Make smaller binaries at expense of compile time
 	})
+}
+
+// A task that runs the output file.
+task<Exec>("run") {
+	dependsOn("build")
+	commandLine("../out/sample.kexe")
 }
