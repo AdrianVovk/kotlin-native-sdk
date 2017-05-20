@@ -1,10 +1,17 @@
 package sdk.args
 
-class Arguments
-object ArgProcessor {
-	fun from(args: Array<String>): Arguments {
-		return Arguments()
+class Arguments(val rawCmdline: Array<String>, supportedArgs: MutableList<Arg>?) {
+
+	init {
+
 	}
+
+	lateinit var list: MutableList<Arg>
+
+	fun <T> getVal(tag: String) {
+
+	}
+
 }
 
 class ArgConfig(val desc: String) {

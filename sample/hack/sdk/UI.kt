@@ -18,13 +18,21 @@ fun <T> obtainInstance(pointer: COpaquePointer? /* CPointer<out CPointed>? */) =
 abstract class Application(val execName: String, val args: Array<String>, val id: String, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
 	val ptr = StableObjPtr.create(this)
 
+  abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
+
+  open var supportedArgs: ArgConfig? = ArgConfig("")
+
+  open fun cleanup() {
+    // Does nothing by default; for developer to implement if needed
+  }
+
 	init {
 		info("Starting $execName as $id", tag = "SDK Application")
 		val app = gtk_application_new(id, flags)!!
 
 		// Process arguments
 		val gtkargs = arrayOf(execName).union(args.asIterable()) // Needed to include basename for GTK to work
-		for (arg in supportedArgs()?.data ?: mutableListOf()) {
+		for (arg in supportedArgs?.data ?: mutableListOf()) {
 			//TODO: Add support for passing data
 			g_application_add_main_option(app.reinterpret(),
 			   arg.longName,
@@ -41,7 +49,7 @@ abstract class Application(val execName: String, val args: Array<String>, val id
 					staticCFunction { app: CPointer<GtkApplication>?, user_data: gpointer? ->
 						// This makes a pointer to call the setup function
 						val instance = obtainInstance<Application>(user_data)
-						instance.setup(app, ArgProcessor.from(instance.args))
+						instance.setup(app, Arguments(instance.args, supportedArgs?.data))
 					}, data = ptr.value)
 
 		// Run program
@@ -60,13 +68,6 @@ abstract class Application(val execName: String, val args: Array<String>, val id
 		System.exit(status)
 	}
 
-	abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
-
-	open fun supportedArgs(): ArgConfig? = null
-
-	open fun cleanup() {
-		// Does nothing by default; for developer to implement if needed
-	}
 }
 
 class Window(val app: CValuesRef<GtkApplication>?, initTitle: String? = null, toRun: Window.() -> Unit = {}) : CustomTagLoggable {
@@ -121,4 +122,3 @@ class Button(initText: String? = null, toRun: Button.() -> Unit = {}) {
 		toRun()
 	}
 }
-

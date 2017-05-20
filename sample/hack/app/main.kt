@@ -9,9 +9,20 @@ fun main(cmdline: Array<String>) { GtkDemoApp("gtkdemo", cmdline) }
 
 class GtkDemoApp(execName: String, cmdline: Array<String>) : Application(execName, cmdline, "org.gtk.demo") {
 
-	override fun supportedArgs() = ArgConfig("A simple demo app showing off Kotlin/Native with a simple Substance SDK app using GTK")
-		.add("version", 'v', "Print out version of the prgram")
-		.add("output", 'o', "Output logs")
+	init { // Configure the application
+
+		// Usage
+		description("A simple demo app showing off Kotlin/Native with a simple Substance SDK app using GTK")
+		arguments {
+			boolean("version", 'v', "Print out the version of this program")
+			boolean("log", 'l', "Print out extra log data with this program")
+		}
+
+		if (!Platform.isLinux()) {
+			fatal("This program only works on Linux currently")
+		}
+
+	}
 
 	override fun setup(app: CPointer<GtkApplication>?, args: Arguments) {
  		Window(app, "GTK+ Demo") {
@@ -43,7 +54,7 @@ class GtkDemoApp(execName: String, cmdline: Array<String>) : Application(execNam
 		gtk_application_set_app_menu(app, appMenu.reinterpret<GMenuModel>())
 		g_object_unref(appMenu)
 
-	    //gtk_window_set_default_size(window, 200, 200)
+	  //gtk_window_set_default_size(window, 200, 200)
 	}
 
 }
