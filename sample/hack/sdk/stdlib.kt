@@ -13,10 +13,10 @@ object System {
 object Platform {
 	val platform: String
 		get() {
-			"Linux"
+			return "Linux"
 		}
 
 	fun isLinux() = platform == "linux"
 	fun isMacOs() = platform == "darwin"
-	
+
 }

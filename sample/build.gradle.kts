@@ -44,11 +44,14 @@ configure<KonanArtifactsContainer> {
 		outputDir("../out/")
 
 		// TODO: Get rid of GTK here - leave for Linux platform
-		useInterop("gtk")
+		//useInterop("gtk")
+		library("build/konan/interopStubs/genGtkInteropStubs/gtkInteropStubs.bc.klib")
 		linkerOpts("-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0")
 
-		useInterop("time")
-		useInterop("stdlib")
+		//useInterop("time")
+		library("build/konan/interopStubs/genTimeInteropStubs/timeInteropStubs.bc.klib")
+		//useInterop("stdlib")
+		library("build/konan/interopStubs/genStdlibInteropStubs/stdlibInteropStubs.bc.klib")
 
 		enableOptimization() // Make smaller binaries at expense of compile time
 	})

@@ -3,6 +3,7 @@ import gtk.*
 import sdk.ui.*
 import sdk.args.*
 import sdk.System
+import sdk.Platform
 import kotlinx.cinterop.*
 
 fun main(cmdline: Array<String>) { GtkDemoApp("gtkdemo", cmdline) }
@@ -12,8 +13,8 @@ class GtkDemoApp(execName: String, cmdline: Array<String>) : Application(execNam
 	init { // Configure the application
 
 		// Usage
-		description("A simple demo app showing off Kotlin/Native with a simple Substance SDK app using GTK")
-		arguments {
+		//description("A simple demo app showing off Kotlin/Native with a simple Substance SDK app using GTK")
+		arguments(cmdline) {
 			boolean("version", 'v', "Print out the version of this program")
 			boolean("log", 'l', "Print out extra log data with this program")
 		}

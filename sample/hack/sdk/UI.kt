@@ -20,7 +20,9 @@ abstract class Application(val execName: String, val args: Array<String>, val id
 
   abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
 
-  open var supportedArgs: ArgConfig? = ArgConfig("")
+  open var supportedArgs: MutableList<AnyArg> = mutableListOf()
+
+  open var parsedArguments: ParsedArguments = mutableMapOf()
 
   open fun cleanup() {
     // Does nothing by default; for developer to implement if needed
@@ -32,7 +34,7 @@ abstract class Application(val execName: String, val args: Array<String>, val id
 
 		// Process arguments
 		val gtkargs = arrayOf(execName).union(args.asIterable()) // Needed to include basename for GTK to work
-		for (arg in supportedArgs?.data ?: mutableListOf()) {
+		for (arg in supportedArgs) {
 			//TODO: Add support for passing data
 			g_application_add_main_option(app.reinterpret(),
 			   arg.longName,
@@ -47,9 +49,8 @@ abstract class Application(val execName: String, val args: Array<String>, val id
 		// Creating program initiaton
 		g_signal_connect(app, "activate",
 					staticCFunction { app: CPointer<GtkApplication>?, user_data: gpointer? ->
-						// This makes a pointer to call the setup function
-						val instance = obtainInstance<Application>(user_data)
-						instance.setup(app, Arguments(instance.args, supportedArgs?.data))
+						val instance = obtainInstance<Application>(user_data) // This makes a pointer to call the setup function
+						instance.setup(app, Arguments.staticC(instance.parsedArguments))
 					}, data = ptr.value)
 
 		// Run program

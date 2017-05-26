@@ -22,7 +22,11 @@ configure<KonanArtifactsContainer> {
 		inputDir("src/")
 		outputDir("../out/")
 
-		//library(out/sdk.klib) //FUTURE: KLib support
+		library("../out/sdk.klib.klib") //BUG: Naming, interop, etc
+
+		// HACK: Include GTK
+		library("../sdk/native/build/konan/interopCompiledStubs/gtkInteropStubs/gtkInteropStubs.klib.klib")
+		linkerOpts("-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0")
 
 		enableOptimization() // Make smaller binaries at expense of compile time
 	})
