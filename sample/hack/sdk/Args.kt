@@ -16,12 +16,14 @@ fun CmdLine.data(long: String, short: Char): String {
 	return get(pos + 1)
 }
 
-data class Arg<T>(val longName: String,
+/*data*/ class Arg<T: Any>(val longName: String,
  	val shortName: Char,
  	val desc: String,
  	val optional: Boolean = true,
 	val default: T,
-	val compute: Arg<T>.(CmdLine) -> T)
+	val computeFun: Arg<T>.(CmdLine) -> T) {
+		fun compute(input: CmdLine) = computeFun(input) // HACK
+	}
 typealias AnyArg = Arg<*>
 val processBoolean: Arg<Boolean>.(CmdLine) -> Boolean = {
 		when {
@@ -56,7 +58,7 @@ fun Application.arguments(cmdLine: CmdLine, make: ArgConfig.() -> Unit) {
 
 	// Parse arguments
 	for (arg in config.output) {
-		this.parsedArguments.put(arg.longName, ""/*arg.compute(cmdLine)*/)
+		this.parsedArguments.put(arg.longName, arg.compute(cmdLine))
 	}
 }
 

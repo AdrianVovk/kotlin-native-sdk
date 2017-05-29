@@ -1,6 +1,6 @@
 include 'sdk', 'sdk:native', 'sdk:android', 'sdk:jvm', 'sdk:abstract'
 include 'sample'
-include 'gradle-plugin', 'ide-plugin' // Tooling
+include 'gradle-plugin', 'gradle-plugin:sample', 'ide-plugin' // Tooling
 
 def configureGradleScriptKotlinOn(ProjectDescriptor project) {
      project.buildFileName = 'build.gradle.kts'

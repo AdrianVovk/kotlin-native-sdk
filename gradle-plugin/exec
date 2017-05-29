@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+gradle build
+
+echo
+echo "----------------------------------------------------------------------"
+echo
+
+gradle sample:test

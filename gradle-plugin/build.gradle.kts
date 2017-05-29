@@ -1,4 +1,6 @@
 import org.gradle.api.tasks.Copy
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 
 buildscript {
 
@@ -11,25 +13,40 @@ buildscript {
     }
 }
 
-apply {	plugin("kotlin") }
+apply {
+	plugin("kotlin")
+	plugin("maven-publish")
+}
 
 allprojects {
-	group = "sdk.gradle.plugin"
+	group = "sdk.plugin"
 	version = "0.0.1"
 }
 
 task<Copy>("move-output") {
 	dependsOn("jar")
-	from(tasks.getByName("jar").outputs.files)
+	from(tasks.getByName("jar").outputs.files.singleFile)
 	into("../out/")
+	rename("gradle-plugin-(.*).jar", "gradle-plugin.jar")
 }
 
 tasks.getByName("build") {
 	it.dependsOn("move-output")
+	it.finalizedBy("publishToMavenLocal")
 }
 
 repositories { gradleScriptKotlin() }
 dependencies {
 	compile(kotlinModule("stdlib")) // Include Kotlin Standard Library
 	compile(gradleApi()) // Include the Gradle API
+	compile(gradleScriptKotlinApi())
+}
+
+configure<PublishingExtension> {
+	publications {
+		create<MavenPublication>("mavenJavaLibrary") {
+            artifactId 'project1-sample'
+			artifact("../out/gradle-plugin.jar")
+		}
+	}
 }
