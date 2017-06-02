@@ -5,4 +5,4 @@ echo
 echo "----------------------------------------------------------------------"
 echo
 
-gradle sample:test
+gradle sample:hello sample:goodbye

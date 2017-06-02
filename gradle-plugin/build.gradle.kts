@@ -31,8 +31,8 @@ task<Copy>("move-output") {
 }
 
 tasks.getByName("build") {
-	it.dependsOn("move-output")
-	it.finalizedBy("publishToMavenLocal")
+	dependsOn("move-output")
+	finalizedBy("publishToMavenLocal")
 }
 
 repositories { gradleScriptKotlin() }
@@ -45,7 +45,7 @@ dependencies {
 configure<PublishingExtension> {
 	publications {
 		create<MavenPublication>("mavenJavaLibrary") {
-            artifactId 'project1-sample'
+            artifactId = "SdkPlugin"
 			artifact("../out/gradle-plugin.jar")
 		}
 	}

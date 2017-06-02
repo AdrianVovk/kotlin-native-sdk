@@ -1,16 +1,27 @@
-import sdk.plugin.*
+///*
+import sdk.plugin.SdkPlugin
+import sdk.plugin.HelloConfig
 
 buildscript {
-
 	repositories {
 		mavenLocal()
 	}
 
 	dependencies {
-		classpath("sdk.plugin:gradle-plugin:+")
+		classpath("sdk.plugin:SdkPlugin:+")
 	}
 }
 
-apply {
-	plugin("substance-sdk")
+plugins {
+	id("substance-sdk")
 }
+
+/*apply {
+	plugin<SdkPlugin>()
+}*/
+
+sdkHi {
+	greeting = "Test"
+	from = "Sample"
+}
+//*/

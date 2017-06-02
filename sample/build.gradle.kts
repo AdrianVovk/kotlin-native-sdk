@@ -20,26 +20,27 @@ apply {
 	plugin<KonanPlugin>()
 }
 
-configure<KonanInteropContainer> {
-
-	create("gtk", closureOf<KonanInteropConfig> {
+val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by extensions
+konanInterop {
+	"gtk" {
 		defFile("../sdk/native/libs/gtk.def")
 		pkg("gtk")
-	})
+	}
 
-	create("time", closureOf<KonanInteropConfig> {
+	"time" {
 		defFile("../sdk/native/libs/time.def")
 		pkg("c.time")
-	})
+	}
 
-	create("stdlib", closureOf<KonanInteropConfig> {
+	"stdlib" {
 		defFile("../sdk/native/libs/stdlib.def")
 		pkg("c.stdlib")
-	})
+	}
 }
 
-configure<KonanArtifactsContainer> {
-	create("sample", closureOf<KonanCompilerConfig> {
+val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by extensions
+konanArtifacts {
+	"sample" {
 		inputDir("hack/")
 		outputDir("../out/")
 
@@ -54,7 +55,7 @@ configure<KonanArtifactsContainer> {
 		//library("build/konan/interopStubs/genStdlibInteropStubs/stdlibInteropStubs.bc.klib")
 
 		enableOptimization() // Make smaller binaries at expense of compile time
-	})
+	}
 }
 
 task<Exec>("run") {

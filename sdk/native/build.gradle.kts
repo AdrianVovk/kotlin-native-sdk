@@ -17,25 +17,26 @@ apply {
 	plugin<KonanPlugin>()
 }
 
-configure<KonanInteropContainer> {
-
-	create("gtk", closureOf<KonanInteropConfig> {
-		defFile("libs/gtk.def")
+val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by extensions
+konanInterop {
+	"gtk" {
+		defFile("../sdk/native/libs/gtk.def")
 		pkg("gtk")
-	})
+	}
 
-	create("time", closureOf<KonanInteropConfig> {
-		defFile("libs/time.def")
+	"time" {
+		defFile("../sdk/native/libs/time.def")
 		pkg("c.time")
-	})
+	}
 
-	create("stdlib", closureOf<KonanInteropConfig> {
-		defFile("libs/stdlib.def")
+	"stdlib" {
+		defFile("../sdk/native/libs/stdlib.def")
 		pkg("c.stdlib")
-	})
+	}
 }
 
-configure<KonanArtifactsContainer> {
+val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by extensions
+konanArtifacts {
 	create("sdk", closureOf<KonanCompilerConfig> {
 		inputDir("src/")
 		outputDir("../../out/")
