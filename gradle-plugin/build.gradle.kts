@@ -1,52 +1,46 @@
 import org.gradle.api.tasks.Copy
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 
-buildscript {
-
-    repositories {
-        gradleScriptKotlin()
-    }
-
-    dependencies {
-        classpath(kotlinModule("gradle-plugin"))
-    }
+plugins {
+	id("nebula.kotlin") version "1.1.2"
+	id("maven-publish")
+	id("java-gradle-plugin")
+	id("org.jetbrains.dokka") version "0.9.14-eap-2"
 }
 
-apply {
-	plugin("kotlin")
-	plugin("maven-publish")
-}
-
-allprojects {
-	group = "sdk.plugin"
-	version = "0.0.1"
-}
-
-task<Copy>("move-output") {
-	dependsOn("jar")
-	from(tasks.getByName("jar").outputs.files.singleFile)
-	into("../out/")
-	rename("gradle-plugin-(.*).jar", "gradle-plugin.jar")
-}
-
-tasks.getByName("build") {
-	dependsOn("move-output")
-	finalizedBy("publishToMavenLocal")
-}
+group = "sdk.plugin"
+version = "0.0.1"
 
 repositories { gradleScriptKotlin() }
 dependencies {
 	compile(kotlinModule("stdlib")) // Include Kotlin Standard Library
 	compile(gradleApi()) // Include the Gradle API
-	compile(gradleScriptKotlinApi())
+	compile(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
 }
 
-configure<PublishingExtension> {
-	publications {
-		create<MavenPublication>("mavenJavaLibrary") {
-            artifactId = "SdkPlugin"
-			artifact("../out/gradle-plugin.jar")
-		}
+task<Copy>("move-output") {
+	dependsOn("jar")
+	from(tasks.getByName("jar").outputs.files.singleFile) // Take the output of the jar file
+	into("../out/") // And put it in the out folder
+	rename("gradle-plugin-(.*).jar", "gradle-plugin.jar") // Rename the output jar file
+}
+tasks.getByName("build").dependsOn("move-output")
+
+/////////////////////////////////////////////////////////////////////
+// Gradle Plugin and Publishing
+/////////////////////////////////////////////////////////////////////
+
+publishing {
+	repositories {
+	    maven { setUrl("../out/maven-repo") }
 	}
+}
+
+gradlePlugin {
+  plugins {
+    create("SdkPlugin") {
+      id = "substance.SdkPlugin"
+      implementationClass = "sdk.plugin.SdkPlugin"
+      //version = "SNAPSHOT" // TODO
+    }
+  }
 }

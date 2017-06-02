@@ -1,3 +1,10 @@
+pluginManagement.repositories {
+	maven {
+		url 'out/maven-repo'
+	}
+	gradlePluginPortal()
+}
+
 include 'sdk', 'sdk:native', 'sdk:android', 'sdk:jvm', 'sdk:abstract'
 include 'sample'
 include 'gradle-plugin', 'gradle-plugin:sample', 'ide-plugin' // Tooling

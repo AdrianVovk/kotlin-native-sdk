@@ -11,7 +11,7 @@ gradle.properties
 
 # Ignore out folder
 out/*
-!out/.keep
+!out/maven-repo/
 
 # Ignore all compiled binaries
 *.kt.bc*

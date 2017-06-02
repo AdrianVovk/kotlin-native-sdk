@@ -2,22 +2,20 @@ package sdk.plugin
 
 import org.gradle.api.*
 import org.gradle.api.tasks.*
-
 import org.gradle.script.lang.kotlin.*
 
-open class SdkPlugin() : Plugin<Project> {
-	override fun apply(project: Project) {
-
-		project.extensions.create<HelloConfig>("sdkHi", HelloConfig::class.java)
-		project.task<HelloTask>("hello")
-
-		project.task<DefaultTask>("goodbye") {
-			doLast {
-				println("Goodbye!")
-			}
-		}
-
-	}
+object Constants {
+	const val HELLO_TASK = "hello"
+	const val HELLO_EXT = "sdkHi"
 }
 
-fun Project.sdkHi(config: HelloConfig.() -> Unit) = configure<HelloConfig>(config)
+open class SdkPlugin() : Plugin {
+
+	override fun apply(project: Project) {
+		with(project) {
+			extensions.create<HelloConfig>(Constants.HELLO_EXT, HelloConfig::class.java)
+			task<HelloTask>(Constants.HELLO_TASK)
+		}
+	}
+
+}

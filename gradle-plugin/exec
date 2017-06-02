@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-gradle build
+gradle publish
 
 echo
 echo "----------------------------------------------------------------------"
 echo
 
-gradle sample:hello sample:goodbye
+gradle sample:hello

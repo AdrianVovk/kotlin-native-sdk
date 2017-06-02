@@ -1,27 +1,8 @@
-///*
-import sdk.plugin.SdkPlugin
-import sdk.plugin.HelloConfig
-
-buildscript {
-	repositories {
-		mavenLocal()
-	}
-
-	dependencies {
-		classpath("sdk.plugin:SdkPlugin:+")
-	}
-}
-
 plugins {
-	id("substance-sdk")
+	id("substance.SdkPlugin") version "0.0.1" // TODO: SNAPSHOT
 }
-
-/*apply {
-	plugin<SdkPlugin>()
-}*/
 
 sdkHi {
 	greeting = "Test"
 	from = "Sample"
 }
-//*/
