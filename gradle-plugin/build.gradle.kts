@@ -52,21 +52,3 @@ gradlePlugin {
     	}
 	}
 }
-
-
-fun test(s: Any)= println(s.toString())
-(extensions.findByName("publishing") as PublishingExtension).publications.withType<MavenPublication> {
-	pom.withXml {
-		// Add repository to XML
-		val doc = asNode()
-
-		val artifactId = (((doc.get("artifactId") as NodeList)[0] as Node).value() as NodeList).text()
-		if (artifactId == "substance.SdkPlugin.gradle.plugin") {
-
-			// Add Kotlin-Native repo to build
-			val repoNode = doc.appendNode("repositories").appendNode("repository")
-			repoNode.appendNode("id", "Kotlin-Native Gradle Plugin Repo")
-			repoNode.appendNode("url", "https://dl.bintray.com/jetbrains/kotlin-native-dependencies")
-		}
-	}
-}
