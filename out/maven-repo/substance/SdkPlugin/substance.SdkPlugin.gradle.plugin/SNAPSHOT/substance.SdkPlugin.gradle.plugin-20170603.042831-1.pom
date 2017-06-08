@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>substance.SdkPlugin</groupId>
   <artifactId>substance.SdkPlugin.gradle.plugin</artifactId>
-  <version>0.0.1</version>
+  <version>SNAPSHOT</version>
   <packaging>pom</packaging>
   <dependencies>
     <dependency>
       <groupId>sdk.plugin</groupId>
       <artifactId>gradle-plugin</artifactId>
-      <version>0.0.1</version>
+      <version>SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

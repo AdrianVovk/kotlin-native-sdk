@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>sdk.plugin</groupId>
   <artifactId>gradle-plugin</artifactId>
-  <version>0.0.1</version>
+  <version>SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>

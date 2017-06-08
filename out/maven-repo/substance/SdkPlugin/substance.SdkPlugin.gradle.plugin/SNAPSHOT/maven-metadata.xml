@@ -2,12 +2,12 @@
 <metadata>
   <groupId>substance.SdkPlugin</groupId>
   <artifactId>substance.SdkPlugin.gradle.plugin</artifactId>
+  <version>SNAPSHOT</version>
   <versioning>
-    <release>0.0.0</release>
-    <versions>
-      <version>SNAPSHOT</version>
-      <version>0.0.0</version>
-    </versions>
-    <lastUpdated>20170608233544</lastUpdated>
+    <snapshot>
+      <timestamp>20170603.042831</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20170603042831</lastUpdated>
   </versioning>
 </metadata>

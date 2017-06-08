@@ -1,4 +1,7 @@
 import org.gradle.api.tasks.Copy
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import groovy.util.*
 
 plugins {
 	id("nebula.kotlin") version "1.1.2"
@@ -8,13 +11,18 @@ plugins {
 }
 
 group = "sdk.plugin"
-version = "0.0.1"
+version = "0.0.0"
 
-repositories { gradleScriptKotlin() }
+repositories {
+	gradleScriptKotlin()
+	maven { setUrl("https://dl.bintray.com/jetbrains/kotlin-native-dependencies") }
+}
 dependencies {
 	compile(kotlinModule("stdlib")) // Include Kotlin Standard Library
 	compile(gradleApi()) // Include the Gradle API
 	compile(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
+
+	compile("org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.2")
 }
 
 task<Copy>("move-output") {
@@ -36,11 +44,29 @@ publishing {
 }
 
 gradlePlugin {
-  plugins {
-    create("SdkPlugin") {
-      id = "substance.SdkPlugin"
-      implementationClass = "sdk.plugin.SdkPlugin"
-      //version = "SNAPSHOT" // TODO
-    }
-  }
+  	plugins {
+    	create("SdkPlugin") {
+      		id = "substance.SdkPlugin"
+      		implementationClass = "sdk.plugin.SdkPlugin"
+      		//version = "SNAPSHOT" // TODO
+    	}
+	}
+}
+
+
+fun test(s: Any)= println(s.toString())
+(extensions.findByName("publishing") as PublishingExtension).publications.withType<MavenPublication> {
+	pom.withXml {
+		// Add repository to XML
+		val doc = asNode()
+
+		val artifactId = (((doc.get("artifactId") as NodeList)[0] as Node).value() as NodeList).text()
+		if (artifactId == "substance.SdkPlugin.gradle.plugin") {
+
+			// Add Kotlin-Native repo to build
+			val repoNode = doc.appendNode("repositories").appendNode("repository")
+			repoNode.appendNode("id", "Kotlin-Native Gradle Plugin Repo")
+			repoNode.appendNode("url", "https://dl.bintray.com/jetbrains/kotlin-native-dependencies")
+		}
+	}
 }
