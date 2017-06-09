@@ -1,15 +1,23 @@
 package sdk.plugin
 
 open class SdkConfig() {
+	var debug = true // Debugging by default, "release" task changes it
+
 	var appName = Constants.SDK_DEFAULT_NAME
 	var appId = Constants.SDK_DEFAULT_ID
 
 	// TODO: Configure input files
 	var outputDir = Constants.SDK_DEFAULT_OUTPUT_DIR
 
-	// TODO: Better dsl. For example `meta.native.optimize`
-	var nativeOptimize = true
-	// TODO: Native interop
+	/////////////////////////////////////
+	// Native
+	/////////////////////////////////////
+
+	data class NativeConf(val optimize: Boolean = true)
+
+	val native = NativeConf()
+
+	fun native(config: NativeConf.() -> Unit) = native.config()
 
 	/////////////////////////////////////
 	// Windows
@@ -19,6 +27,8 @@ open class SdkConfig() {
 	var mainWindow = "UNKNOWN"
 
 	fun windows(config: WindowConf.() -> Unit) = WindowConf(this).config()
+
+
 }
 
 data class Window(val name: String, var main: Boolean = false) {

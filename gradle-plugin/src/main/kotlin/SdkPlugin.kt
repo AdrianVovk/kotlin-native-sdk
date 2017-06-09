@@ -14,10 +14,16 @@ object Constants {
 	const val SDK_DEFAULT_OUTPUT_DIR = "out/"
 
 	const val METADATA_TASK = "genMetadata"
-	const val KONAN_TASK = "buildNative"
-	const val JVM_TASK = ""
-	const val ANDROID_TASK = ""
-	const val ALL_TASK = "buildAll"
+
+	const val KONAN_COMPILE_TASK = "buildNative"
+	const val KONAN_RUN_TASK = "runNative"
+	const val JVM_COMPILE_TASK = "buildJvm"
+	const val JVM_RUN_TASK = "runJvm"
+	const val ANDROID_COMPILE_TASK = "compileAndroid"
+	const val ANDROID_RUN_TASK = "runAndroid"
+
+	const val PLATFORM_BUILD_TASK = "build"
+	const val PLATFORM_RUN_TASK = "run"
 }
 
 fun Project.getTask(name: String) : Task {
@@ -38,11 +44,13 @@ open class SdkPlugin() : Plugin<Project> {
 	override fun apply(project: Project): Unit  = with(project) {
 		extensions.create<SdkConfig>(Constants.SDK_EXT, SdkConfig::class.java)
 
-		task<GenMetadataTask>(Constants.METADATA_TASK)
+		task<GenMetadataTask>(Constants.METADATA_TASK) // Include metadata task in build
 
 		configureKonan() // Configures the 'buildNative' task
 		configureJvm() // Configures the 'buildJvm' task
 		configureAndroid() // Configures the 'buildAndroid' task
+
+		configurePlatformTasks() // Configures "run" and "build" tasks for this system
 	}
 
 }
