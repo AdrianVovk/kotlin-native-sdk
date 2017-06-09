@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-gradle publish
-
-echo
-echo "----------------------------------------------------------------------"
-echo
-
-gradle sample:hello
