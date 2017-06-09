@@ -5,12 +5,6 @@
   <artifactId>substance.SdkPlugin.gradle.plugin</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
-  <repositories>
-    <repository>
-      <id>Kotlin-Native Gradle Plugin Repo</id>
-      <url>https://dl.bintray.com/jetbrains/kotlin-native-dependencies</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>sdk.plugin</groupId>

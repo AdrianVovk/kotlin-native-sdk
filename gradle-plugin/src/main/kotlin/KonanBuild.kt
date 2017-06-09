@@ -32,5 +32,7 @@ fun Project.configureKonan() {
 	tasks.remove(oldBuild)
 	val build = getTask(Constants.KONAN_TASK)
 	build.setDependsOn(oldBuild.dependsOn)
+	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
+	getTask("compileKonanApplication").mustRunAfter(Constants.METADATA_TASK)
 	getTask(Constants.ALL_TASK).dependsOn(build)
 }

@@ -8,6 +8,8 @@ open class GenMetadataTask : DefaultTask() {
 	val appName 	get() = meta.appName
 	val appId 		get() = meta.appId
 
+	val mainWindow	get() = meta.mainWindow
+
 	@TaskAction fun generate() {
 		description = "Test"
 		println("Generating metadata.kt for $appName ($appId)")
@@ -21,6 +23,8 @@ package sdk
 object BuildMetadata {
 	const val APP_NAME = "$appName"
 	const val APP_ID = "$appId"
+
+	const val MAIN_WINDOW = "$mainWindow"
 }
 		""")
 	}

@@ -36,14 +36,9 @@ val Task.meta	get() = project.meta
 open class SdkPlugin() : Plugin<Project> {
 
 	override fun apply(project: Project): Unit  = with(project) {
-		// TODO: Remove
-		extensions.create<HelloConfig>(Constants.HELLO_EXT, HelloConfig::class.java)
-		task<HelloTask>(Constants.HELLO_TASK)
-
 		extensions.create<SdkConfig>(Constants.SDK_EXT, SdkConfig::class.java)
 
 		task<GenMetadataTask>(Constants.METADATA_TASK)
-		getTask("build").dependsOn(Constants.METADATA_TASK)
 
 		configureKonan() // Configures the 'buildNative' task
 		configureJvm() // Configures the 'buildJvm' task
