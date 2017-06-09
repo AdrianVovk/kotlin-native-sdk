@@ -13,7 +13,7 @@ open class GenMetadataTask : DefaultTask() {
 
 		outputFile.writeText("""
 
-			package sdk
+			package sdk.gen
 
 			object BuildMetadata {
 				const val APP_NAME = "${meta.appName}"

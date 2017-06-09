@@ -1,8 +1,3 @@
-// KLib Workaround Gradle File
-// This gradle file is temporary. This lets the user build the sample
-import org.jetbrains.kotlin.gradle.plugin.*
-import org.gradle.api.tasks.Exec
-
 plugins {
 	id("substance.SdkPlugin") version "0.0.0"
 }
@@ -23,9 +18,8 @@ sdk {
 	}
 }
 
-//task("run").dependsOn("runNative")
-//task("build").dependsOn("buildNative")
-
+// KLib Workaround
+// TODO: Remove with Kotlin/Native 0.3
 task<Exec>("update-sources") {
 	commandLine("./update-sources")
 }

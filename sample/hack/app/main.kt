@@ -6,9 +6,9 @@ import sdk.System
 import sdk.Platform
 import kotlinx.cinterop.*
 
-fun main(cmdline: Array<String>) { GtkDemoApp("gtkdemo", cmdline) }
+fun main(cmdline: Array<String>) { GtkDemoApp(cmdline) }
 
-class GtkDemoApp(execName: String, cmdline: Array<String>) : Application(execName, cmdline, "org.gtk.demo") {
+class GtkDemoApp(cmdline: Array<String>) : Application(cmdline) {
 
 	init { // Configure the application
 

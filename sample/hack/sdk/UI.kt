@@ -5,6 +5,7 @@ import sdk.args.*
 import sdk.System
 import gtk.*
 import kotlinx.cinterop.*
+import sdk.gen.BuildMetadata
 
 // Note that all callback parameters must be primitive types or nullable C pointers.
 fun <F : CFunction<*>> g_signal_connect(obj: CPointer<*>, actionName: String,
@@ -15,7 +16,7 @@ fun <F : CFunction<*>> g_signal_connect(obj: CPointer<*>, actionName: String,
 
 fun <T> obtainInstance(pointer: COpaquePointer? /* CPointer<out CPointed>? */) = StableObjPtr.fromValue(pointer!!).get() as T
 
-abstract class Application(val execName: String, val args: Array<String>, val id: String, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
+abstract class Application(val args: Array<String>, val execName: String = BuildMetadata.APP_NAME, val id: String = BuildMetadata.APP_ID, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
 	val ptr = StableObjPtr.create(this)
 
   abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit

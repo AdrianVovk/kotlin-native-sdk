@@ -1,6 +1,7 @@
 package sdk.util.log
 
 import sdk.System
+import sdk.gen.BuildMetadata
 import sdk.util.Date
 
 /**
@@ -140,7 +141,7 @@ fun Any.info(msg: String, tag: String = defaultTag) = println("[INFO - $tag] (${
  *
  * @author Adrian Vovk
  */
-fun Any.debug(msg: String, tag: String = defaultTag) = println("[DEBUG - $tag] (${Date()}): $msg")
+fun Any.debug(msg: String, tag: String = defaultTag) { if (BuildMetadata.DEBUG) println("[DEBUG - $tag] (${Date()}): $msg") }
 
 fun Any.critical(msg: String, tag: String = defaultTag) = println("\u001B[31m[CRITICAL - $tag] (${Date()}): $msg\u001B[0m")
 
