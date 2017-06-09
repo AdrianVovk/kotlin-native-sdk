@@ -2,15 +2,12 @@ pluginManagement.repositories {
 	maven {
 		url 'out/maven-repo'
 	}
+	maven {
+		url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/'
+	}
 	gradlePluginPortal()
 }
 
 include 'sdk', 'sdk:native', 'sdk:android', 'sdk:jvm', 'sdk:abstract'
 include 'sample'
-include 'gradle-plugin', 'gradle-plugin:sample', 'ide-plugin' // Tooling
-
-def configureGradleScriptKotlinOn(ProjectDescriptor project) {
-     project.buildFileName = 'build.gradle.kts'
-     project.children.each { configureGradleScriptKotlinOn(it) }
- }
-configureGradleScriptKotlinOn(rootProject)
+include 'gradle-plugin', 'gradle-plugin:sample', 'ide-plugin'

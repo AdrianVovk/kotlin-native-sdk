@@ -31,7 +31,7 @@ open class GenMetadataTask : DefaultTask() {
 				const val DEBUG = $debug
 
 				const val MAIN_WINDOW = "$mainWindow"
-				const val SUPPORTED_WINDOWS = arrayOf($supportedWindowsString)
+				val SUPPORTED_WINDOWS = arrayOf($supportedWindowsString)
 			}
 
 		""".trimIndent().trim())

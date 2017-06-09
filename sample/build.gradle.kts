@@ -1,77 +1,50 @@
 // KLib Workaround Gradle File
-//
 // This gradle file is temporary. This lets the user build the sample
-
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.gradle.api.tasks.Exec
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://dl.bintray.com/jetbrains/kotlin-native-dependencies") }
-    }
-
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-native-gradle-plugin:+")
-    }
-}
-
-apply {
-	plugin<KonanPlugin>()
+plugins {
+	id("substance.SdkPlugin") version "0.0.0"
 }
 
 val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by extensions
 konanInterop {
-	"gtk" {
+	create("gtk") {
 		defFile("../sdk/native/libs/gtk.def")
 		pkg("gtk")
 	}
 
-	"time" {
+	create("time") {
 		defFile("../sdk/native/libs/time.def")
 		pkg("c.time")
 	}
 
-	"stdlib" {
+	create("stdlib") {
 		defFile("../sdk/native/libs/stdlib.def")
 		pkg("c.stdlib")
 	}
 }
 
-val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by extensions
-konanArtifacts {
-	"sample" {
-		inputDir("hack/")
-		outputDir("../out/")
+sdk {
+	appName = "Sample"
+	appId = "gtk.Sample"
 
-		// TODO: Get rid of GTK here - leave for Linux platform
-		useInterop("gtk")
-		//library("build/konan/interopStubs/genGtkInteropStubs/gtkInteropStubs.bc.klib")
-		linkerOpts("-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0")
+	inputDir = "hack/"
+	outputDir = "../out/"
 
-		useInterop("time")
-		//library("build/konan/interopStubs/genTimeInteropStubs/timeInteropStubs.bc.klib")
-		useInterop("stdlib")
-		//library("build/konan/interopStubs/genStdlibInteropStubs/stdlibInteropStubs.bc.klib")
+	native {
+		interop("gtk")
+		interop("time")
+		interop("stdlib")
 
-		enableOptimization() // Make smaller binaries at expense of compile time
+		linkerOpts = "-L/usr/lib/x86_64-linux-gnu -lglib-2.0 -lgdk-3 -lgtk-3 -lgio-2.0 -lgobject-2.0"
 	}
 }
 
-task<Exec>("run") {
-	dependsOn("build")
-	commandLine("../out/sample.kexe")
-}
+task("run").dependsOn("runNative")
+task("build").dependsOn("buildNative")
 
 task<Exec>("update-sources") {
 	commandLine("./update-sources")
 }
-tasks.getByName("compileKonanSample").dependsOn("update-sources")
-
-// HACK
-//tasks.getByName("compileKonanSample").dependsOn("genGtkInteropStubs")
-//tasks.getByName("compileKonanSample").dependsOn("compileGtkInteropStubs")
-//tasks.getByName("compileKonanSample").dependsOn("genStdlibInteropStubs")
-//tasks.getByName("compileKonanSample").dependsOn("compileStdlibInteropStubs")
-//tasks.getByName("compileKonanSample").dependsOn("genTimeInteropStubs")
-//tasks.getByName("compileKonanSample").dependsOn("compileTimeInteropStubs")
+tasks.getByName("compileKonanApplication").dependsOn("update-sources")

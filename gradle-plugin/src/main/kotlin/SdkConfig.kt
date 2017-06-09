@@ -8,12 +8,18 @@ open class SdkConfig() {
 
 	// TODO: Configure input files
 	var outputDir = Constants.SDK_DEFAULT_OUTPUT_DIR
+	var inputDir = "NONE"
 
 	/////////////////////////////////////
 	// Native
 	/////////////////////////////////////
 
-	data class NativeConf(val optimize: Boolean = true)
+	data class NativeConf(var optimize: Boolean = true,
+		val interops: MutableList<String> = mutableListOf(),
+		var linkerOpts: String = "NONE") {
+
+		fun interop(name: String) = interops.add(name)
+	}
 
 	val native = NativeConf()
 

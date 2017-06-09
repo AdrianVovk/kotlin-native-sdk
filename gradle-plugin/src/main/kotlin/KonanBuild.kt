@@ -16,9 +16,16 @@ fun Project.configureKonan() {
 		"Application" {
 			inputDir("src/native/")
 			inputDir("src/shared")
+			if (meta.inputDir != "NONE") inputDir(meta.inputDir)
 			inputFiles("build/sdk/metadata.kt") // Include generated metadata
 
 			outputDir(meta.outputDir)
+
+			for (interop in meta.native.interops) {
+				useInterop(interop)
+			}
+
+			if (meta.native.linkerOpts != "NONE") linkerOpts(meta.native.linkerOpts)
 
 			if (meta.native.optimize) enableOptimization()
 		}
