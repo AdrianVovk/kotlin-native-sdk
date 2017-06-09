@@ -3,8 +3,8 @@ plugins {
 }
 
 sdk {
-	appName = "Sample"
-	appId = "gtk.Sample"
+	appName = "SdkDemo"
+	appId = "substance.sdk.Demo"
 
 	inputDir = "hack/"
 	outputDir = "../out/"

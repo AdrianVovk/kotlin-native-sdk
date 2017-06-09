@@ -30,23 +30,25 @@ open class SdkConfig() {
 	// Windows
 	/////////////////////////////////////
 
-	val windows = mutableListOf<Window>()
-	var mainWindow = "UNKNOWN"
+	data class WindowConf(val root: SdkConfig, val supported: MutableList<Window> = mutableListOf(),
+		var main: String = "UNKNOWN") {
 
-	fun windows(config: WindowConf.() -> Unit) = WindowConf(this).config()
+		operator fun String.invoke() = supported.add(Window(this))
+		operator fun String.invoke(conf: Window.() -> Unit): Unit {
+			val win = Window(this)
+			win.conf()
+			if (win.main) main = "${root.appId}.${win.name}"
+			supported.add(win)
+		}
 
+		data class Window(val name: String, var main: Boolean = false) {
+			fun main() { main = true }
+		}
 
-}
-
-data class Window(val name: String, var main: Boolean = false) {
-	fun main() { main = true }
-}
-class WindowConf(val root: SdkConfig) {
-	operator fun String.invoke() = root.windows.add(Window(this))
-	operator fun String.invoke(conf: Window.() -> Unit): Unit {
-		val win = Window(this)
-		win.conf()
-		if (win.main) root.mainWindow = "${root.appId}.${win.name}"
-		root.windows.add(win)
 	}
+
+	val windows = WindowConf(this)
+
+	fun windows(config: WindowConf.() -> Unit) = windows.config()
+
 }

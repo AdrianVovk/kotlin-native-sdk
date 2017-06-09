@@ -30,7 +30,7 @@ abstract class Application(val args: Array<String>, val execName: String = Build
   }
 
 	init {
-		info("Starting $execName as $id", tag = "SDK Application")
+		debug("Starting $execName as $id", tag = "SDK Application")
 		val app = gtk_application_new(id, flags)!!
 
 		// Process arguments
@@ -55,18 +55,18 @@ abstract class Application(val args: Array<String>, val execName: String = Build
 					}, data = ptr.value)
 
 		// Run program
-		verbose("Configured $execName; Running", tag = "SDK Application")
+		debug("Configured $execName; Running", tag = "SDK Application")
 		val status = memScoped {
 			g_application_run(app.reinterpret(), gtkargs.size, gtkargs.map { it.cstr.getPointer(memScope) }.toCValues())
 		}
 
 		// Cleanup
-		info("Cleaning Up $execName", tag = "SDK Application")
+		debug("Cleaning Up $execName", tag = "SDK Application")
 		g_object_unref(app)
 		cleanup()
 		ptr.dispose()
 
-		info("Quitting $execName with $status", tag = "SDK Application")
+		debug("Quitting $execName with $status", tag = "SDK Application")
 		System.exit(status)
 	}
 

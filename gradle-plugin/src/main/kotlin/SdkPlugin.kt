@@ -26,7 +26,7 @@ object Constants {
 	const val PLATFORM_RUN_TASK = "run"
 }
 
-fun Project.getTask(name: String) : Task {
+internal fun Project.getTask(name: String) : Task {
 	val tasks = project.getTasksByName(name, false)
 	return if (tasks.isEmpty()) {
 		task<DefaultTask>(name)
@@ -35,13 +35,13 @@ fun Project.getTask(name: String) : Task {
 	}
 }
 
-fun <T> Project.ext(name: String): T = extensions.findByName(name) as T
-val Project.meta	get() = ext<SdkConfig>(Constants.SDK_EXT)
-val Task.meta	get() = project.meta
+internal fun <T> Project.ext(name: String): T = extensions.findByName(name) as T
+internal val Project.meta	get() = ext<SdkConfig>(Constants.SDK_EXT)
+internal val Task.meta	get() = project.meta
 
 open class SdkPlugin() : Plugin<Project> {
 
-	override fun apply(project: Project): Unit  = with(project) {
+	override fun apply(project: Project): Unit = with(project) {
 		extensions.create<SdkConfig>(Constants.SDK_EXT, SdkConfig::class.java)
 
 		task<GenMetadataTask>(Constants.METADATA_TASK) // Include metadata task in build
@@ -50,8 +50,6 @@ open class SdkPlugin() : Plugin<Project> {
 			configureKonan() // Configures the 'buildNative' task
 			configureJvm() // Configures the 'buildJvm' task
 			configureAndroid() // Configures the 'buildAndroid' task
-
-			configurePlatformTasks() // Configures "run" and "build" tasks for this system
 		}
 	}
 

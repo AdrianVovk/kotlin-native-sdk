@@ -21,8 +21,8 @@ open class GenMetadataTask : DefaultTask() {
 
 				const val DEBUG = ${meta.debug}
 
-				const val MAIN_WINDOW = "${meta.mainWindow}"
-				val SUPPORTED_WINDOWS = arrayOf<String>(${meta.windows.map { "\"${meta.appId}.${it.name}\"" }.joinToString()})
+				const val MAIN_WINDOW = "${meta.windows.main}"
+				val SUPPORTED_WINDOWS = arrayOf<String>(${meta.windows.supported.map { "\"${meta.appId}.${it.name}\"" }.joinToString()})
 			}
 
 		""".trimIndent().trim())
