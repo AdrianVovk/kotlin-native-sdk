@@ -10,6 +10,15 @@ fun Project.configureKonan() {
 	pluginManager.apply(KonanPlugin::class.java)
 
 	// Configure konan compiler
+	val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by project.extensions
+	konanInterop {
+		for (interop in meta.native.interops) {
+			interop.name {
+				defFile(interop.defFile)
+				if (interop.pkg != "NONE") pkg(interop.pkg)
+			}
+		}
+	}
 
 	val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by project.extensions
 	konanArtifacts {
@@ -21,7 +30,7 @@ fun Project.configureKonan() {
 
 			outputDir(meta.outputDir)
 
-			for (interop in meta.native.interops) {
+			for (interop in meta.native.interops.map { it.name }) {
 				useInterop(interop)
 			}
 

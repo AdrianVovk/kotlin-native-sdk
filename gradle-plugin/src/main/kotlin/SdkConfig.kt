@@ -15,10 +15,11 @@ open class SdkConfig() {
 	/////////////////////////////////////
 
 	data class NativeConf(var optimize: Boolean = true,
-		val interops: MutableList<String> = mutableListOf(),
+		val interops: MutableList<InteropConf> = mutableListOf(),
 		var linkerOpts: String = "NONE") {
 
-		fun interop(name: String) = interops.add(name)
+		data class InteropConf(val name: String, val defFile: String, val pkg: String)
+		fun interop(name: String, defFile: String, pkg: String = "NONE") = interops.add(InteropConf(name, defFile, pkg))
 	}
 
 	val native = NativeConf()

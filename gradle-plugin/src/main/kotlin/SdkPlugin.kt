@@ -46,11 +46,13 @@ open class SdkPlugin() : Plugin<Project> {
 
 		task<GenMetadataTask>(Constants.METADATA_TASK) // Include metadata task in build
 
-		configureKonan() // Configures the 'buildNative' task
-		configureJvm() // Configures the 'buildJvm' task
-		configureAndroid() // Configures the 'buildAndroid' task
+		afterEvaluate {
+			configureKonan() // Configures the 'buildNative' task
+			configureJvm() // Configures the 'buildJvm' task
+			configureAndroid() // Configures the 'buildAndroid' task
 
-		configurePlatformTasks() // Configures "run" and "build" tasks for this system
+			configurePlatformTasks() // Configures "run" and "build" tasks for this system
+		}
 	}
 
 }
