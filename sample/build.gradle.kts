@@ -4,7 +4,9 @@ plugins {
 
 sdk {
 	appName = "SdkDemo"
-	appId = "substance.sdk.Demo"
+	appId = "subsance.sdk.Demo"
+
+	debug = false
 
 	inputDir = "hack/"
 	outputDir = "../out/"

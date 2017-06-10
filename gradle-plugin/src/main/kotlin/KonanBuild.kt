@@ -54,6 +54,6 @@ fun Project.configureKonan() {
 	// Run task
 	task<Exec>(Constants.KONAN_RUN_TASK) {
 		dependsOn(build)
-		commandLine("${meta.outputDir}/Application.kexe") // TODO: Name detection
+		commandLine("${meta.outputDir.removeSuffix("/")}/Application.kexe") // TODO: Name detection
 	}
 }

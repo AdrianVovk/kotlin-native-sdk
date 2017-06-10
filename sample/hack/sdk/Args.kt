@@ -25,30 +25,25 @@ fun CmdLine.data(long: String, short: Char): String {
 		fun compute(input: CmdLine) = computeFun(input) // HACK
 	}
 typealias AnyArg = Arg<*>
-val processBoolean: Arg<Boolean>.(CmdLine) -> Boolean = {
-		when {
-			it.includes(longName, shortName) -> true
-			else -> default
-		}
-	}
+val processBoolean: Arg<Boolean>.(CmdLine) -> Boolean = { it.includes(longName, shortName) }
 val processString: Arg<String>.(CmdLine) -> String = {
-			when {
-				it.includes(longName, shortName) -> it.data(longName, shortName)
-				else -> default
-			}
-		}
+	when {
+		it.includes(longName, shortName) -> it.data(longName, shortName)
+		else -> default
+	}
+}
 val processInt: Arg<Int>.(CmdLine) -> Int = {
-		when {
-			it.includes(longName, shortName) -> it.data(longName, shortName).toInt()
-			else -> default
-		}
+	when {
+		it.includes(longName, shortName) -> it.data(longName, shortName).toInt()
+		else -> default
 	}
+}
 val processDouble: Arg<Double>.(CmdLine) -> Double = {
-		when {
-			it.includes(longName, shortName) -> it.data(longName, shortName).toDouble()
-			else -> default
-		}
+	when {
+		it.includes(longName, shortName) -> it.data(longName, shortName).toDouble()
+		else -> default
 	}
+}
 
 fun Application.arguments(cmdLine: CmdLine, make: ArgConfig.() -> Unit) {
 	val config = ArgConfig()
@@ -57,13 +52,16 @@ fun Application.arguments(cmdLine: CmdLine, make: ArgConfig.() -> Unit) {
 	this.supportedArgs = config.output // Tells application what arguments it supports
 
 	// Parse arguments
+	val parsed: ParsedArguments = mutableMapOf()
 	for (arg in config.output) {
-		this.parsedArguments.put(arg.longName, arg.compute(cmdLine))
+		println(arg.compute(cmdLine))
+		parsed.put(arg.longName, arg.compute(cmdLine))
 	}
+	this.parsedArguments = parsed
 }
 
 class ArgConfig() {
-	public var output = mutableListOf<AnyArg>()
+	public val output = mutableListOf<AnyArg>()
 
 	fun boolean(longName: String, shortName: Char, desc: String, optional: Boolean = true) =
 		output.add(Arg<Boolean>(longName, shortName, desc, optional, false /* default */, processBoolean))

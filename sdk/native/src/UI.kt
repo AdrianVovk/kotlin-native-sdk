@@ -19,21 +19,27 @@ fun <T> obtainInstance(pointer: COpaquePointer? /* CPointer<out CPointed>? */) =
 abstract class Application(val args: Array<String>, val execName: String = BuildMetadata.APP_NAME, val id: String = BuildMetadata.APP_ID, val flags : GApplicationFlags = G_APPLICATION_FLAGS_NONE) {
 	val ptr = StableObjPtr.create(this)
 
-  abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
+	abstract fun setup(app: CPointer<GtkApplication>?, args: Arguments) : Unit
 
-  open var supportedArgs: MutableList<AnyArg> = mutableListOf()
+	open var supportedArgs: MutableList<AnyArg> = mutableListOf()
 
-  open var parsedArguments: ParsedArguments = mutableMapOf()
+	lateinit var parsedArguments: ParsedArguments
 
-  open fun cleanup() {
-    // Does nothing by default; for developer to implement if needed
-  }
+	open fun cleanup() {
+		// Does nothing by default; for developer to implement if needed
+	}
+
+	open fun usage() {
+		// Does nothing by default; for developer to implement if needed
+	}
 
 	init {
 		debug("Starting $execName as $id", tag = "SDK Application")
 		val app = gtk_application_new(id, flags)!!
 
+
 		// Process arguments
+		usage() // Setup the usage
 		val gtkargs = arrayOf(execName).union(args.asIterable()) // Needed to include basename for GTK to work
 		for (arg in supportedArgs) {
 			//TODO: Add support for passing data
