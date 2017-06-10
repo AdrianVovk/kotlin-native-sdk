@@ -17,3 +17,4 @@ out/*
 *.kt.bc*
 build/
 */build/
+sample/hack/
