@@ -1,6 +1,8 @@
 package sdk.plugin
 
-open class SdkConfig() {
+import org.gradle.api.Project
+
+open class SdkConfig(val project: Project) {
 	var debug = true // Debugging by default, "release" task changes it
 
 	var appName = Constants.SDK_DEFAULT_NAME
@@ -14,15 +16,40 @@ open class SdkConfig() {
 	// Native
 	/////////////////////////////////////
 
-	data class NativeConf(var optimize: Boolean = true,
+	data class NativeConf(val root: SdkConfig,
+		var optimize: Boolean = true,
 		val interops: MutableList<InteropConf> = mutableListOf(),
+		val defFilesToGenerate: MutableList<DefFile> = mutableListOf(),
 		var linkerOpts: String = "NONE") {
 
 		data class InteropConf(val name: String, val defFile: String, val pkg: String)
+		data class DefFile(val name: String,
+			var headers: String = "NONE",
+			var compilerOpts: String = "NONE",
+			var headerFilter: String = "NONE",
+			var excludeDependentModules: Boolean? = null, /* TODO: Default value? */
+			var includeC: String = "NONE") {
+
+			fun headers(vararg files: String) {
+				headers = files.joinToString(" ")
+			}
+			fun compilerOpts(vararg opts: String) {
+				compilerOpts = opts.joinToString(" ")
+			}
+		}
 		fun interop(name: String, defFile: String, pkg: String = "NONE") = interops.add(InteropConf(name, defFile, pkg))
+		fun interop(name: String, pkg: String = "NONE", configure: DefFile.() -> Unit) {
+			// Create the def file
+			val def = DefFile(name)
+			def.configure()
+			defFilesToGenerate.add(def)
+
+			// Create the interop object
+			interops.add(InteropConf(name, defFile = "${root.project.buildDir}/sdk/nativeDefs/$name.def", pkg = pkg))
+		}
 	}
 
-	val native = NativeConf()
+	val native = NativeConf(this)
 
 	fun native(config: NativeConf.() -> Unit) = native.config()
 

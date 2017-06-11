@@ -40,14 +40,26 @@ sdk {
 		interop("name", defFile = "path/to/def/file.def", pkg = "interop.name") // Include a def file as interop
 		interop("another", defFile = "path/to/another/file.def", pkg = "interop.another") // Can be run many times
 		interop("generatedDef", pkg = "interop.generated") {
-			headers = arrayOf("header1.h", "header2.h", "header3.h")
+			headers("header1.h", "header2.h", "header3.h")
+
 			compilerOpts = "-I. -I/usr/include/something"
-			// More options to come
+			// or use compilerOpts("-I.", "-I/usr/include/something")
+
+			// this C code is included in the bindings
+			includeC = """
+				static inline int getErrno() {
+				    return errno;
+				}
+			"""
+
+			headerFilter = "SomeLibrary/**"
+			excludeDependentModules = true
 		}
 
 		linkerOpts = "" // Pass linker opts to Konan compiler
 		optimize = false // Make binaries smaller at the expense of compile time. DEFAULT: true
 	}
+}
 ```
 
 ## Tasks
@@ -71,4 +83,4 @@ To do this, use `-Pargs=""` with your build command and put your arguements in t
 ##### Extras
 `genMetadata`: Generate a metadata file containing build information for the SDK library (located at `build/sdk/metadata.kt`)
 
-`genNativeDefs`: Generate def files for native interop (located at `build/sdk/nativeDef/`)
+`genNativeDefs`: Generate def files for native interop (located at `build/sdk/nativeDefs/`)

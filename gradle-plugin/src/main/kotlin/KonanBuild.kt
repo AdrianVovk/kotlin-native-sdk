@@ -48,6 +48,7 @@ fun Project.configureKonan() {
 	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
 
 	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
+	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
 
 	val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
@@ -58,5 +59,29 @@ fun Project.configureKonan() {
 
 		val args = (properties[Constants.KONAN_RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
 		commandLine("$out/$normAppName.$fileExt", *args)
+	}
+}
+
+open class GenDefsTask : DefaultTask() {
+	@TaskAction fun generate() {
+		with(project) { file("$buildDir/sdk/nativeDefs/") }.mkdirs() // Make the directory
+		for (def in meta.native.defFilesToGenerate) {
+			val outputFile = with(project) { file("$buildDir/sdk/nativeDefs/${def.name}.def") }
+			var text = "# Header file for ${def.name}\n"
+
+			if (def.headers != "NONE") text += "headers = ${def.headers}\n"
+			if (def.compilerOpts != "NONE") text += "compilerOpts = ${def.compilerOpts}\n"
+			if (def.headerFilter != "NONE") text += "headerFilter = ${def.headerFilter}\n"
+			if (def.excludeDependentModules != null) text += "excludeDependentModules = ${def.excludeDependentModules}\n"
+			if (def.includeC != "NONE") {
+				val c = """
+					---
+					${def.includeC}
+				""".trimIndent().trim()
+				text += c
+			}
+
+			outputFile.writeText(text)
+		}
 	}
 }
