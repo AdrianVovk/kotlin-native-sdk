@@ -26,5 +26,5 @@ task<Exec>("update-sources") {
 	commandLine("./update-sources")
 }
 afterEvaluate {
-	tasks.getByName("compileKonanApplication").dependsOn("update-sources")
+	tasks.getByName("compileKonanSdkDemo").dependsOn("update-sources")
 }

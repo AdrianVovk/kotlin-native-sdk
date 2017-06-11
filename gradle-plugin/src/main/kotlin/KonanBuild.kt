@@ -9,6 +9,8 @@ import org.jetbrains.kotlin.gradle.plugin.*
 fun Project.configureKonan() {
 	pluginManager.apply(KonanPlugin::class.java)
 
+	val normAppName = meta.appName.split(" ", "_").map { it.capitalize()  }.joinToString("").capitalize()
+
 	// Configure konan compiler
 	val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by project.extensions
 	konanInterop {
@@ -22,7 +24,7 @@ fun Project.configureKonan() {
 
 	val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by project.extensions
 	konanArtifacts {
-		"Application" {
+		normAppName {
 			inputDir("src/native/")
 			inputDir("src/shared")
 			if (meta.inputDir != "NONE") inputDir(meta.inputDir)
@@ -40,20 +42,21 @@ fun Project.configureKonan() {
 		}
 	}
 
-	//TODO: Configure interop
-
-	// The konan plugin configures the build task with everything needed to build
-	// This just renames the whole konan build process to something else.
 	val oldBuild = getTask("build")
 	tasks.remove(oldBuild)
 	val build = getTask(Constants.KONAN_COMPILE_TASK)
 	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
-	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
-	getTask("compileKonanApplication").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
 
-	// Run task
+	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
+	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
+
+	val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
+	val out = meta.outputDir.removeSuffix("/")
+
 	task<Exec>(Constants.KONAN_RUN_TASK) {
 		dependsOn(build)
-		commandLine("${meta.outputDir.removeSuffix("/")}/Application.kexe") // TODO: Name detection
+
+		val args = (properties[Constants.KONAN_RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
+		commandLine("$out/$normAppName.$fileExt", *args)
 	}
 }

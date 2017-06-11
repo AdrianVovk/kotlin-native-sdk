@@ -5,25 +5,21 @@ import org.gradle.api.tasks.*
 import org.gradle.script.lang.kotlin.*
 
 object Constants {
-	const val HELLO_TASK = "hello"
-	const val HELLO_EXT = "sdkHi"
-
 	const val SDK_EXT = "sdk"
 	const val SDK_DEFAULT_NAME = "SdkApplication"
 	const val SDK_DEFAULT_ID = "com.group.SdkApplication"
 	const val SDK_DEFAULT_OUTPUT_DIR = "out/"
 
 	const val METADATA_TASK = "genMetadata"
+	const val NATIVE_DEF_TASK = "genNativeDefs"
 
 	const val KONAN_COMPILE_TASK = "buildNative"
 	const val KONAN_RUN_TASK = "runNative"
+	const val KONAN_RUN_ARGUMENTS = "args"
 	const val JVM_COMPILE_TASK = "buildJvm"
 	const val JVM_RUN_TASK = "runJvm"
 	const val ANDROID_COMPILE_TASK = "compileAndroid"
 	const val ANDROID_RUN_TASK = "runAndroid"
-
-	const val PLATFORM_BUILD_TASK = "build"
-	const val PLATFORM_RUN_TASK = "run"
 }
 
 internal fun Project.getTask(name: String) : Task {
