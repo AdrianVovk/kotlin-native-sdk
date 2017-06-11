@@ -48,8 +48,12 @@ fun Project.configureKonan() {
 	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
 
 	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
-	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
+	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
+
+	for (interop in meta.native.interops) {
+		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
+	}
 
 	val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
 	val out = meta.outputDir.removeSuffix("/")
