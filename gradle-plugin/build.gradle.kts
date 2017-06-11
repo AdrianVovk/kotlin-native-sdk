@@ -8,6 +8,7 @@ plugins {
 	id("maven-publish")
 	id("java-gradle-plugin")
 	id("org.jetbrains.dokka") version "0.9.14-eap-2"
+	id("com.gradle.plugin-publish") version "0.9.7"
 }
 
 group = "sdk.plugin"
@@ -51,4 +52,19 @@ gradlePlugin {
       		//version = "SNAPSHOT" // TODO
     	}
 	}
+}
+
+pluginBundle {
+  website = "http://www.github.com/AdrianVovk/kotlin-native-sdk/tree/sdk"
+  vcsUrl = "https://github.com/AdrianVovk/kotlin-native-sdk.git"
+  description = "Gradle Plugin for multi-platform compilation"
+  tags = listOf("substance","kotlin","kotlin-native")
+
+  this.plugins {
+    "SdkPlugin" {
+      id = "substance.SdkPlugin"
+      displayName = "Substance SDK Plugin"
+    }
+  }
+
 }
