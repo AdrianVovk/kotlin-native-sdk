@@ -14,14 +14,12 @@ sdk {
 	native {
 		interop("gtk", pkg = "gtk") {
 			headers = "gtk/gtk.h"
-			headerFilter = "gtk/**"
-			compilerOpts("-pthread", "-I/usr/include/gtk-3.0", "-I/usr/include/at-spi2-atk/2.0",
-							"-I/usr/include/at-spi-2.0", "-I/usr/include/dbus-1.0", "-I/usr/include/gio-unix-2.0/",
-							"-I/usr/lib/x86_64-linux-gnu/dbus-1.0/include", "-I/usr/include/mirclient",
-							"-I/usr/include/mircookie", "-I/usr/include/cairo", "-I/usr/include/pango-1.0",
-							"-I/usr/include/harfbuzz", "-I/usr/include/pixman-1", "-I/usr/include/freetype2",
-							"-I/usr/include/libpng16", "-I/usr/include/gdk-pixbuf-2.0", "-I/usr/include/glib-2.0",
-							"-I/usr/lib/x86_64-linux-gnu/glib-2.0/include", "-I/usr/include/mircore")
+			//headerFilter = "gtk/**"
+			compilerOpts = "-I. -pthread -I/usr/include/gtk-3.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/gtk-3.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/mirclient -I/usr/include/mircore -I/usr/include/mircookie -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+			//compilerOpts("-pthread", "-I/usr/include/gtk-3.0", "-I/usr/lib64/gtk-3.0/include",
+			//	"-I/usr/include/atk-1.0", "-I/usr/include/cairo", "-I/usr/include/pango-1.0",
+			//	"-I/usr/include/glib-2.0", "-I/usr/lib64/glib-2.0/include", "-I/usr/include/pixman-1",
+			//	"-I/usr/include/freetype2", "-I/usr/include/libpng12")
 		}
 		interop("time", pkg = "c.time") {
 			headers = "time.h"
@@ -41,4 +39,5 @@ task<Exec>("update-sources") {
 }
 afterEvaluate {
 	tasks.getByName("compileKonanSdkDemo").dependsOn("update-sources")
+	tasks.getByName("compileKonanSdkDemo").mustRunAfter("update-sources")
 }
