@@ -11,7 +11,10 @@ fun Project.configureKonan() {
 
 	val normAppName = meta.appName.split(" ", "_").map { it.capitalize()  }.joinToString("").capitalize()
 
-	// Configure konan compiler
+	//////////////////////////////
+	// Configure konan compiler //
+	//////////////////////////////
+
 	val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by project.extensions
 	konanInterop {
 		for (interop in meta.native.interops) {
@@ -42,6 +45,10 @@ fun Project.configureKonan() {
 		}
 	}
 
+	///////////
+	// Tasks //
+	///////////
+
 	val oldBuild = getTask("build")
 	tasks.remove(oldBuild)
 	val build = getTask(Constants.KONAN_COMPILE_TASK)
@@ -49,18 +56,18 @@ fun Project.configureKonan() {
 
 	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
 	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
-	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 
+	task<GenDefsTask>(Constants.NATIVE_DEF_TASK)
+	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 	for (interop in meta.native.interops) {
 		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
 	}
 
-	val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
-	val out = meta.outputDir.removeSuffix("/")
-
 	task<Exec>(Constants.KONAN_RUN_TASK) {
 		dependsOn(build)
 
+		val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
+		val out = meta.outputDir.removeSuffix("/")
 		val args = (properties[Constants.KONAN_RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
 		commandLine("$out/$normAppName.$fileExt", *args)
 	}
@@ -71,7 +78,7 @@ open class GenDefsTask : DefaultTask() {
 		with(project) { file("$buildDir/sdk/nativeDefs/") }.mkdirs() // Make the directory
 		for (def in meta.native.defFilesToGenerate) {
 			val outputFile = with(project) { file("$buildDir/sdk/nativeDefs/${def.name}.def") }
-			var text = "# Header file for ${def.name}\n"
+			var text = ""
 
 			if (def.headers != "NONE") text += "headers = ${def.headers}\n"
 			if (def.compilerOpts != "NONE") text += "compilerOpts = ${def.compilerOpts}\n"
@@ -81,7 +88,7 @@ open class GenDefsTask : DefaultTask() {
 				val c = """
 					---
 					${def.includeC}
-				""".trimIndent().trim()
+				""".trimIndent().trim() // Fixes spacing
 				text += c
 			}
 

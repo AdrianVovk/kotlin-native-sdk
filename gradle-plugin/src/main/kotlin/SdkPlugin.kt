@@ -39,9 +39,7 @@ open class SdkPlugin() : Plugin<Project> {
 
 	override fun apply(project: Project): Unit = with(project) {
 		extensions.add(Constants.SDK_EXT, SdkConfig(this))
-
-		task<GenMetadataTask>(Constants.METADATA_TASK) // Include metadata task in build
-		task<GenDefsTask>(Constants.NATIVE_DEF_TASK) // Allow generation of Def files
+		task<GenMetadataTask>(Constants.METADATA_TASK)
 
 		afterEvaluate {
 			configureKonan() // Configures the 'buildNative' task
