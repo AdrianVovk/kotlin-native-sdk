@@ -4,7 +4,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import groovy.util.*
 
 plugins {
-	id("nebula.kotlin") version "1.1.2"
+	id("org.jetbrains.kotlin.jvm") version "1.1.2-5"
 	id("maven-publish")
 	id("java-gradle-plugin")
 	id("org.jetbrains.dokka") version "0.9.14-eap-2"
@@ -24,6 +24,7 @@ dependencies {
 	compile(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
 
 	compile("org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.2")
+	compile("org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-5")
 }
 
 task<Copy>("move-output") {

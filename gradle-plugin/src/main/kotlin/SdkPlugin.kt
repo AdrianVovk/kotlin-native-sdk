@@ -13,9 +13,9 @@ object Constants {
 	const val METADATA_TASK = "genMetadata"
 	const val NATIVE_DEF_TASK = "genNativeDefs"
 
+	const val RUN_ARGUMENTS = "args"
 	const val KONAN_COMPILE_TASK = "buildNative"
 	const val KONAN_RUN_TASK = "runNative"
-	const val KONAN_RUN_ARGUMENTS = "args"
 	const val JVM_COMPILE_TASK = "buildJvm"
 	const val JVM_RUN_TASK = "runJvm"
 	const val ANDROID_COMPILE_TASK = "compileAndroid"
@@ -39,13 +39,18 @@ open class SdkPlugin() : Plugin<Project> {
 
 	override fun apply(project: Project): Unit = with(project) {
 		extensions.add(Constants.SDK_EXT, SdkConfig(this))
-		task<GenMetadataTask>(Constants.METADATA_TASK)
+		task<GenMetadataTask>(Constants.METADATA_TASK) {
+			description = "Generates a metadata class that gives the program access to build flags"
+			group = "build setup"
+		}
 
 		afterEvaluate {
-			configureKonan() // Configures the 'buildNative' task
+			//configureKonan() // Configures the 'buildNative' task
 			configureJvm() // Configures the 'buildJvm' task
 			configureAndroid() // Configures the 'buildAndroid' task
 		}
+
+		//TODO: Clean tasks
 	}
 
 }

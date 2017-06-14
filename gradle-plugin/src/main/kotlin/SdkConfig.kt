@@ -13,6 +13,17 @@ open class SdkConfig(val project: Project) {
 	var inputDir = "NONE"
 
 	/////////////////////////////////////
+	// JVM
+	/////////////////////////////////////
+
+	data class JvmConf(var main: String = "sdk.runtime.Zygote")
+
+	val jvm = JvmConf()
+
+	fun jvm(config: JvmConf.() -> Unit) = jvm.config()
+
+
+	/////////////////////////////////////
 	// Native
 	/////////////////////////////////////
 

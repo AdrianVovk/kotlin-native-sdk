@@ -51,24 +51,34 @@ fun Project.configureKonan() {
 
 	val oldBuild = getTask("build")
 	tasks.remove(oldBuild)
-	val build = getTask(Constants.KONAN_COMPILE_TASK)
+	tasks.remove(getTask("clean")) // Fix build error. TODO: Add functionality
+	val build = task(Constants.KONAN_COMPILE_TASK) {
+		group = "build"
+		description = "Creates a native binary for this program (using Kotlin/Native)"
+	}
 	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
 
 	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
 	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
 
-	task<GenDefsTask>(Constants.NATIVE_DEF_TASK)
+	task<GenDefsTask>(Constants.NATIVE_DEF_TASK) {
+		description = "Generates library defenition files for Kotlin/Native"
+		group = "build setup"
+	}
 	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 	for (interop in meta.native.interops) {
 		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
 	}
 
 	task<Exec>(Constants.KONAN_RUN_TASK) {
+		group = "run"
+		description = "Creates a native binary and runs it (using kotlin/Native)"
+
 		dependsOn(build)
 
 		val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
 		val out = meta.outputDir.removeSuffix("/")
-		val args = (properties[Constants.KONAN_RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
+		val args = (properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
 		commandLine("$out/$normAppName.$fileExt", *args)
 	}
 }

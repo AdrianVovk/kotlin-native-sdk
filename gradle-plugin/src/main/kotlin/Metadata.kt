@@ -6,8 +6,6 @@ import org.gradle.api.tasks.*
 open class GenMetadataTask : DefaultTask() {
 
 	@TaskAction fun generate() {
-		setDescription("Test")
-
 		val outputFile = with(project) { file("$buildDir/sdk/metadata.kt") }
 		outputFile.getParentFile().mkdirs() // Create directory
 
