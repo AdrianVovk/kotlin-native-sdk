@@ -22,19 +22,6 @@ object Constants {
 	const val ANDROID_RUN_TASK = "runAndroid"
 }
 
-internal fun Project.getTask(name: String) : Task {
-	val tasks = project.getTasksByName(name, false)
-	return if (tasks.isEmpty()) {
-		task<DefaultTask>(name)
-	} else {
-		tasks.single()
-	}
-}
-
-internal fun <T> Project.ext(name: String): T = extensions.findByName(name) as T
-internal val Project.meta	get() = ext<SdkConfig>(Constants.SDK_EXT)
-internal val Task.meta	get() = project.meta
-
 open class SdkPlugin() : Plugin<Project> {
 
 	override fun apply(project: Project): Unit = with(project) {
@@ -44,12 +31,17 @@ open class SdkPlugin() : Plugin<Project> {
 			group = "build setup"
 		}
 
-		afterEvaluate {
-			//configureKonan() // Configures the 'buildNative' task
-			configureJvm() // Configures the 'buildJvm' task
-			configureAndroid() // Configures the 'buildAndroid' task
+		// Sandbox setup
+		val sandboxDir = file("$buildDir/sdk")
+		gradle.settingsEvaluated {
+			it.findProject("native").projectDir = sandboxDir
+			it.findProject("jvm").projectDir = sandboxDir
+			it.findProject("android").projectDir = sandboxDir
 		}
 
+		sandbox("native")?.configureKonan()
+		sandbox("jvm")?.configureJvm()
+		sandbox("android")?.configureAndroid()
 		//TODO: Clean tasks
 	}
 

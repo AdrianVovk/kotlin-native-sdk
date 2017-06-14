@@ -5,27 +5,10 @@ import org.gradle.api.tasks.*
 import org.gradle.script.lang.kotlin.*
 
 import org.gradle.api.plugins.*
-import org.gradle.api.internal.HasConvention
-
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
-val SourceSet.kotlin	get() = ((this as HasConvention).convention.plugins["kotlin"] as KotlinSourceSet).kotlin
-
 fun Project.configureJvm() {
-
-	//////////////////////////////
-	// Include standard library //
-	//////////////////////////////
-
-	repositories {
-		mavenCentral()
-	}
-
-	dependencies {
-		compile("org.jetbrains.kotlin:kotlin-stdlib")
-	}
 
 	////////////////////////
 	// Application plugin //
@@ -34,7 +17,7 @@ fun Project.configureJvm() {
 	pluginManager.apply("application")
 
 	configure<ApplicationPluginConvention> {
-		mainClassName = meta.jvm.main
+		mainClassName = meta.jvm.main.fullName(meta)
 		applicationName = meta.appName
 	}
 
@@ -53,10 +36,23 @@ fun Project.configureJvm() {
 	// Source sets //
 	/////////////////
 
-	val sourceSet = convention.getPlugin(JavaPluginConvention::class.java).sourceSets.getByName("main")
+	val sourceSet = java.sourceSets.getByName("main")
 	sourceSet.kotlin.srcDirs("src/jvm", "src/shared", "$buildDir/sdk")
 	sourceSet.java.srcDir("src/jvm-ext/java")
 	sourceSet.resources.srcDir("src/jvm-ext/resources")
+
+	//////////////////////////////
+	// Include standard library //
+	//////////////////////////////
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		compile("org.jetbrains.kotlin:kotlin-stdlib")
+	}
+
 
 	///////////
 	// Tasks //
@@ -82,7 +78,7 @@ fun Project.configureJvm() {
 		dependsOn(build)
 
 		classpath = sourceSet.runtimeClasspath
-		main = meta.jvm.main
+		main = meta.jvm.main.fullName(meta)
 		args((properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>())
 	}*/
 }
