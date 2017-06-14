@@ -59,6 +59,8 @@ sdk {
 		linkerOpts = "" // Pass linker opts to Konan compiler
 		optimize = false // Make binaries smaller at the expense of compile time. DEFAULT: true
 	}
+
+	jvm.main = "com.example.app.MainKt"
 }
 ```
 
