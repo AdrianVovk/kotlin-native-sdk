@@ -62,7 +62,28 @@ sdk {
 }
 ```
 
-## Tasks
+### Project structure
+The SDK plugin has a custom project structure for the multi-language build process.
+
+This is the default directory structure:
+
+- `Project root`
+	- `build.gradle.kts`: The build script for configuring the build
+	- `src/`: The main source directory
+		- `shared/`: Contains files to be compiled by all builds.
+		- `native/`: Contains files to be compiled by Kotlin/Native.
+		- `jvm/`: Contains files to be compiled by Kotlin/JVM.
+		- `jvm-ext/`: Contains extra files for the JVM
+			- `java/`: Contains Java source files to be compiled
+			- `resources/`: Contains resource files to be compiled
+		- `android/`: Contains files to be compiled for Android
+		- `android-ext/`: Contains extra files for Android
+			- `java/`: Contains Java source files to be compiled
+			- `ndk/`: Contains Kotlin/Native (or C, depending on configuration) source files to be compiled for the NDK
+			- `resources/`: Contains resource files to be compiled
+	- `out/`: Where all compiled binaries are placed
+
+### Tasks
 ##### Building
 `buildNative`: Build the program for native targets (using Kotlin/Native)
 
