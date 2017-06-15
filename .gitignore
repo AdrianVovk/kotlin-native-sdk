@@ -11,6 +11,7 @@ gradle.properties
 
 # Ignore out folder
 out/*
+*/out/*
 !out/maven-repo/
 
 # Ignore all compiled binaries

@@ -9,5 +9,5 @@ pluginManagement.repositories {
 }
 
 include 'sdk', 'sdk:native', 'sdk:android', 'sdk:jvm', 'sdk:abstract'
-include 'sample'
+include 'sample', 'hello-sample'
 include 'gradle-plugin', 'gradle-plugin:sample', 'ide-plugin'
