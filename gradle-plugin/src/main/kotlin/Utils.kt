@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.gradle.api.plugins.JavaPluginConvention
 
 import org.gradle.api.initialization.Settings
+import org.gradle.api.tasks.JavaExec
 
 internal fun Project.getTask(name: String) : Task {
 	val tasks = project.getTasksByName(name, false)
@@ -38,11 +39,28 @@ fun Project.sandbox(name: String): Project? {
 	// Creates a sandbox for applying plugins
 	try {
 		val proj = project(":$name")
-		proj.buildDir = file("build/")
+		proj.buildDir = file("$rootDir/build/")
 		proj.extensions.add(Constants.SDK_EXT, meta) // Give it the metadata object
+
+		val projectFolder = file("$rootDir/$name/")
+		if (!projectFolder.isDirectory()) {
+			if (projectFolder.exists()) { // If it exists but isn't a directory
+                throw GradleException("Please rename $rootDir/$name, as it is causing problems with the build")
+			}
+			mkdir(projectFolder.absolutePath)
+			gradle.buildFinished {
+				projectFolder.delete()
+			}
+		}
+
+		proj.afterEvaluate {
+			for (task in tasks.withType<JavaExec>()) {
+				task.workingDir = rootDir // Fix Java workingDir
+			}
+		}
 		return proj
-	} catch (e: Exception) {
-		println("Skipping support for target: $name. To use, add `include(\"$name\")` to settings.gradle")
+	} catch (e: UnknownProjectException) {
+		if (!meta.suppressPlatformWarning) println("[WARNING] Skipping support for $name. To use, add `include(\"$name\")` to settings.gradle")
 		return null
 	}
 }

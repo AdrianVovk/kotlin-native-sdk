@@ -7,13 +7,13 @@ import org.gradle.script.lang.kotlin.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 fun Project.configureKonan() {
-	pluginManager.apply(KonanPlugin::class.java)
+	pluginManager.apply(KonanPlugin::class.java) // Apply the Kotlin/Native build plugin
 
 	val normAppName = meta.appName.split(" ", "_").map { it.capitalize()  }.joinToString("").capitalize()
 
-	//////////////////////////////
-	// Configure konan compiler //
-	//////////////////////////////
+	////////////////////
+	// Konan compiler //
+	////////////////////
 
 	val konanInterop: NamedDomainObjectContainer<KonanInteropConfig> by project.extensions
 	konanInterop {
@@ -49,17 +49,24 @@ fun Project.configureKonan() {
 	// Tasks //
 	///////////
 
-	val oldBuild = getTask("build")
-	tasks.remove(oldBuild)
-	tasks.remove(getTask("clean")) // Fix build error. TODO: Add functionality
-	val build = task(Constants.KONAN_COMPILE_TASK) {
-		group = "build"
-		description = "Creates a native binary for this program (using Kotlin/Native)"
-	}
-	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
+	// Build
 
-	build.dependsOn(Constants.METADATA_TASK.fromParent(this)) // Add metadata task to the build process
-	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK.fromParent(this)) // Generate metadata before build
+	val build = getTask(Constants.GENERIC_BUILD_TASK)
+	build.group = "build"
+	build.description = "Creates a native binary for this program (using Kotlin/Native)"
+	parent.task(Constants.KONAN_COMPILE_TASK) {
+		dependsOn(build)
+		group = build.group
+		description = build.description
+	}
+
+	// Metadata
+
+	val metaTask = Constants.METADATA_TASK.fromParent(this)
+	build.dependsOn(metaTask) // Add metadata task to the build process
+	getTask("compileKonan$normAppName").mustRunAfter(metaTask) // Generate metadata before build
+
+	// Def files
 
 	task<GenDefsTask>(Constants.NATIVE_DEF_TASK) {
 		description = "Generates library defenition files for Kotlin/Native"
@@ -70,7 +77,9 @@ fun Project.configureKonan() {
 		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
 	}
 
-	task<Exec>(Constants.KONAN_RUN_TASK) {
+	// Running
+
+	val run = task<Exec>(Constants.GENERIC_RUN_TASK) {
 		group = "run"
 		description = "Creates a native binary and runs it (using kotlin/Native)"
 
@@ -81,6 +90,11 @@ fun Project.configureKonan() {
 		val args = (parent.properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
 		commandLine("$out/$normAppName.$fileExt", *args)
 	}
+	parent.task(Constants.KONAN_RUN_TASK) {
+		dependsOn(run)
+		group = run.group
+		description = run.description
+	}
 }
 
 open class GenDefsTask : DefaultTask() {
@@ -88,7 +102,7 @@ open class GenDefsTask : DefaultTask() {
 		for (def in meta.native.defFilesToGenerate) {
 			val outputFile = with(project) {
 				val file = file("$buildDir/sdk/nativeDefs/${def.name}.def")
-				file.mkdirs()
+				file.mkdirs() // Make sure that the folder exists
 				file
 			}
 			var text = ""

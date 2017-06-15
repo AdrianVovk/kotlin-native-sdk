@@ -4,6 +4,7 @@ import org.gradle.api.Project
 
 open class SdkConfig(val project: Project) {
 	var debug = true // Debugging by default, "release" task changes it
+	var suppressPlatformWarning = false // Supresses warning if platform isn't included in build
 
 	var appName = Constants.SDK_DEFAULT_NAME
 	var appId = Constants.SDK_DEFAULT_ID
@@ -16,7 +17,7 @@ open class SdkConfig(val project: Project) {
 	// JVM
 	/////////////////////////////////////
 
-	data class JvmConf(var main: String = "sdk.runtime.Zygote")
+	data class JvmConf(var main: String = "NONE")
 
 	val jvm = JvmConf()
 

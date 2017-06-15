@@ -14,6 +14,8 @@ plugins {
 group = "sdk.plugin"
 version = "0.0.0"
 
+defaultTasks("build", "publish")
+
 repositories {
 	gradleScriptKotlin()
 	maven { setUrl("https://dl.bintray.com/jetbrains/kotlin-native-dependencies") }

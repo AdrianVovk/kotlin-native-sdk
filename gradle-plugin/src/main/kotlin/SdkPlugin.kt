@@ -10,14 +10,21 @@ object Constants {
 	const val SDK_DEFAULT_ID = "com.group.SdkApplication"
 	const val SDK_DEFAULT_OUTPUT_DIR = "out/"
 
-	const val METADATA_TASK = ":genMetadata"
+	const val METADATA_TASK = "genMetadata"
 	const val NATIVE_DEF_TASK = "genDefs"
+	const val MOVE_TASK = "moveOutputs"
+
+	const val GENERIC_BUILD_TASK = "build"
+	const val GENERIC_RUN_TASK = "run"
 
 	const val RUN_ARGUMENTS = "args"
+
 	const val KONAN_COMPILE_TASK = "buildNative"
 	const val KONAN_RUN_TASK = "runNative"
+
 	const val JVM_COMPILE_TASK = "buildJvm"
 	const val JVM_RUN_TASK = "runJvm"
+
 	const val ANDROID_COMPILE_TASK = "compileAndroid"
 	const val ANDROID_RUN_TASK = "runAndroid"
 }
@@ -31,17 +38,11 @@ open class SdkPlugin() : Plugin<Project> {
 			group = "build setup"
 		}
 
-		// Sandbox setup
-		val sandboxDir = file("$buildDir/sdk")
-		gradle.settingsEvaluated {
-			//findProject(":native").projectDir = sandboxDir
-			//findProject(":jvm").projectDir = sandboxDir
-			//findProject(":android").projectDir = sandboxDir
+		afterEvaluate {
+			sandbox("native")?.configureKonan()
+			sandbox("jvm")?.configureJvm()
+			sandbox("android")?.configureAndroid()
 		}
-
-		sandbox("native")?.configureKonan()
-		sandbox("jvm")?.configureJvm()
-		sandbox("android")?.configureAndroid()
 		//TODO: Clean tasks
 	}
 

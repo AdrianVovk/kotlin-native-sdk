@@ -2,16 +2,25 @@
 This project is a gradle plugin for using the Substance SDK. This will eventually allow for a codebase that works on multiple platforms and targets.
 
 ### Build file configuration:
-First, a custom repo needs to be added to your application by editing `settings.gradle`:
+##### `settings.gradle`
+Configure the `settings.gradle` file like so:
 ```groovy
+// Let the compiler find Kotlin-Native
 pluginManagement.repositories {
 	maven {
 		url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/'
 	}
 	gradlePluginPortal()
 }
+
+// Include build types
+include("native")
+include("jvm")
+include("android")
 ```
-This gives the plugin the ability to use [Kotlin/Native](https://github.com/JetBrains/kotlin-native)
+The first block gives Gradle the ability to find [Kotlin/Native](https://github.com/JetBrains/kotlin-native)
+
+The `include` statements enable configurations for the plugin. In other words, `include("native")` enables compilation for native targets, `include("jvm")` enables compilation for the JVM, etc.
 
 Here is an example `build.gradle.kts` file:
 ```kotlin
@@ -24,6 +33,7 @@ sdk {
 	appId = "com.example.app" // ID of the application
 
 	debug = false // Tell the program to print out debug detail. DEFAULT: true
+	suppressPlatformWarning = true // Suppress the warning about excluded build platforms
 
 	inputDir = "sources/" // Currently adds one extra directory to compilation
 	outputDir = "customOut/" // Where to place binaries. DEFAULT: "out/"
@@ -60,7 +70,7 @@ sdk {
 		optimize = false // Make binaries smaller at the expense of compile time. DEFAULT: true
 	}
 
-	jvm.main = "com.example.app.MainKt"
+	jvm.main = "MainKt" // The main class to run for Java. DEFAULT: Is to be located in the SDK library. Set this manually for now
 }
 ```
 
@@ -87,18 +97,18 @@ This is the default directory structure:
 
 ### Tasks
 ##### Building
-`buildNative`: Build the program for native targets (using Kotlin/Native)
+`buildNative` or `native:build`: Build the program for native targets (using Kotlin/Native)
 
-`buildJvm`: COMING SOON
+`buildJvm` or `jvm:build`: Build the program for the JVM
 
-`buildAndroid`: COMING SOON
+`buildAndroid` or `android:build`: COMING SOON
 
 ##### Running
-`runNative`: Build, then run the program for native targets (using Kotlin/Native)
+`runNative` or `native:run`: Build, then run the program for native targets (using Kotlin/Native)
 
-`runJvm`: COMING SOON
+`runJvm` or `jvm:run`: Build, then run the program for the JVM
 
-`runAndroid`: COMING SOON
+`runAndroid` or `android:run`: COMING SOON
 
 When using the run tasks, it is possible to pass arguments to the program.
 To do this, use `-Pargs=""` with your build command and put your arguements in the quotes.
@@ -106,4 +116,4 @@ To do this, use `-Pargs=""` with your build command and put your arguements in t
 ##### Extras
 `genMetadata`: Generate a metadata file containing build information for the SDK library (located at `build/sdk/metadata.kt`)
 
-`genNativeDefs`: Generate def files for native interop (located at `build/sdk/nativeDefs/`)
+`native:genDefs`: Generate def files for native interop (located at `build/sdk/nativeDefs/`)

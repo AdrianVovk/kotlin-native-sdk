@@ -2,11 +2,14 @@ plugins {
 	id("substance.SdkPlugin") version "0.0.0"
 }
 
+defaultTasks("update-sources", "native:build")
+
 sdk {
 	appName = "SdkDemo"
 	appId = "subsance.sdk.Demo"
 
 	debug = false
+	suppressPlatformWarning = true
 
 	inputDir = "hack/"
 	outputDir = "../out/"
@@ -36,8 +39,4 @@ sdk {
 // TODO: Remove with Kotlin/Native 0.3
 task<Exec>("update-sources") {
 	commandLine("./update-sources")
-}
-afterEvaluate {
-	tasks.getByName("compileKonanSdkDemo").dependsOn("update-sources")
-	tasks.getByName("compileKonanSdkDemo").mustRunAfter("update-sources")
 }

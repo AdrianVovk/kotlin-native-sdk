@@ -10,6 +10,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 fun Project.configureJvm() {
 
+	if (meta.jvm.main == "NONE") throw GradleException("Please set jvm.main in your build file")
+
 	////////////////////////
 	// Application plugin //
 	////////////////////////
@@ -37,9 +39,9 @@ fun Project.configureJvm() {
 	/////////////////
 
 	val sourceSet = java.sourceSets.getByName("main")
-	sourceSet.kotlin.srcDirs("src/jvm", "src/shared", "$buildDir/sdk")
-	sourceSet.java.srcDir("src/jvm-ext/java")
-	sourceSet.resources.srcDir("src/jvm-ext/resources")
+	sourceSet.kotlin.srcDirs("$rootDir/src/jvm", "$rootDir/src/shared", "$buildDir/sdk")
+	sourceSet.java.srcDir("$rootDir/src/jvm-ext/java")
+	sourceSet.resources.srcDir("$rootDir/src/jvm-ext/resources")
 
 	//////////////////////////////
 	// Include standard library //
@@ -57,28 +59,43 @@ fun Project.configureJvm() {
 	///////////
 	// Tasks //
 	///////////
-/* WHY: Don't modify the task structure. Leaving this as-is allows for some debugging
-	val oldBuild = getTask("build")
-	tasks.remove(oldBuild)
 
-	// TODO: configure new build
+	// Build
 
-	val build = task(Constants.JVM_COMPILE_TASK) {
-		group = "build"
-		description = "Creates a binary to be run on the JVM"
+	val build = getTask(Constants.GENERIC_BUILD_TASK)
+	build.group = "build"
+	build.description = "Creates a binary to be run on the JVM"
+	build.finalizedBy(task<Copy>(Constants.MOVE_TASK) {
+		// Move output file
+		from("$buildDir/distributions") {
+			include("*.zip")
+		}
+		// TODO: Fat jar
+		into("$rootDir/${meta.outputDir}")
+		rename("${meta.appName}.zip", "JVM Application.zip")
+	})
+	parent.task(Constants.JVM_COMPILE_TASK) {
+		dependsOn(build)
+		group = build.group
+		description = build.description
 	}
 
-	build.dependsOn(Constants.METADATA_TASK)
-	getTask("compileKotlin").mustRunAfter(Constants.METADATA_TASK)
+	// Metadata
 
-	task<JavaExec>(Constants.JVM_RUN_TASK) {
-		group = "run"
-		description = "Creates a JVM binary and runs it"
+	val metadataTask = Constants.METADATA_TASK.fromParent(this)
+	build.dependsOn(metadataTask)
+	getTask("compileKotlin").mustRunAfter(metadataTask)
 
-		dependsOn(build)
+	// Running
 
-		classpath = sourceSet.runtimeClasspath
-		main = meta.jvm.main.fullName(meta)
-		args((properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>())
-	}*/
+	val run = getTask(Constants.GENERIC_RUN_TASK) as JavaExec
+	run.group = "run"
+	run.description = "Creates a JVM binary and runs it"
+	run.args((parent.properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>())
+	run.dependsOn(build)
+	parent.task(Constants.JVM_RUN_TASK) {
+		dependsOn(run)
+		group = run.group
+		description = run.description
+	}
 }
