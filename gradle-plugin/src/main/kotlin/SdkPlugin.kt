@@ -10,8 +10,8 @@ object Constants {
 	const val SDK_DEFAULT_ID = "com.group.SdkApplication"
 	const val SDK_DEFAULT_OUTPUT_DIR = "out/"
 
-	const val METADATA_TASK = "genMetadata"
-	const val NATIVE_DEF_TASK = "genNativeDefs"
+	const val METADATA_TASK = ":genMetadata"
+	const val NATIVE_DEF_TASK = "genDefs"
 
 	const val RUN_ARGUMENTS = "args"
 	const val KONAN_COMPILE_TASK = "buildNative"
@@ -34,9 +34,9 @@ open class SdkPlugin() : Plugin<Project> {
 		// Sandbox setup
 		val sandboxDir = file("$buildDir/sdk")
 		gradle.settingsEvaluated {
-			it.findProject("native").projectDir = sandboxDir
-			it.findProject("jvm").projectDir = sandboxDir
-			it.findProject("android").projectDir = sandboxDir
+			//findProject(":native").projectDir = sandboxDir
+			//findProject(":jvm").projectDir = sandboxDir
+			//findProject(":android").projectDir = sandboxDir
 		}
 
 		sandbox("native")?.configureKonan()

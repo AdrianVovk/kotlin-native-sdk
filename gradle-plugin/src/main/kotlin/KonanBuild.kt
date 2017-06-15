@@ -28,12 +28,12 @@ fun Project.configureKonan() {
 	val konanArtifacts: NamedDomainObjectContainer<KonanCompilerConfig> by project.extensions
 	konanArtifacts {
 		normAppName {
-			inputDir("src/native/")
-			inputDir("src/shared")
-			if (meta.inputDir != "NONE") inputDir(meta.inputDir)
-			inputFiles("build/sdk/metadata.kt") // Include generated metadata
+			inputDir("$rootDir/src/native/")
+			inputDir("$rootDir/src/shared")
+			if (meta.inputDir != "NONE") inputDir("$rootDir/${meta.inputDir}")
+			inputFiles("$buildDir/sdk/metadata.kt") // Include generated metadata
 
-			outputDir(meta.outputDir)
+			outputDir("$rootDir/${meta.outputDir}")
 
 			for (interop in meta.native.interops.map { it.name }) {
 				useInterop(interop)
@@ -58,8 +58,8 @@ fun Project.configureKonan() {
 	}
 	build.setDependsOn(oldBuild.dependsOn) // Transfer build dependencies
 
-	build.dependsOn(Constants.METADATA_TASK) // Add metadata task to the build process
-	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK) // Generate metadata before build
+	build.dependsOn(Constants.METADATA_TASK.fromParent(this)) // Add metadata task to the build process
+	getTask("compileKonan$normAppName").mustRunAfter(Constants.METADATA_TASK.fromParent(this)) // Generate metadata before build
 
 	task<GenDefsTask>(Constants.NATIVE_DEF_TASK) {
 		description = "Generates library defenition files for Kotlin/Native"
@@ -77,17 +77,20 @@ fun Project.configureKonan() {
 		dependsOn(build)
 
 		val fileExt = if (System.getProperty("os.name").startsWith("Windows")) "exe" else "kexe"
-		val out = meta.outputDir.removeSuffix("/")
-		val args = (properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
+		val out = "$rootDir/${meta.outputDir}".removeSuffix("/")
+		val args = (parent.properties[Constants.RUN_ARGUMENTS] as String?)?.split(" ")?.toTypedArray<String>() ?: arrayOf<String>()
 		commandLine("$out/$normAppName.$fileExt", *args)
 	}
 }
 
 open class GenDefsTask : DefaultTask() {
 	@TaskAction fun generate() {
-		with(project) { file("$buildDir/sdk/nativeDefs/") }.mkdirs() // Make the directory
 		for (def in meta.native.defFilesToGenerate) {
-			val outputFile = with(project) { file("$buildDir/sdk/nativeDefs/${def.name}.def") }
+			val outputFile = with(project) {
+				val file = file("$buildDir/sdk/nativeDefs/${def.name}.def")
+				file.mkdirs()
+				file
+			}
 			var text = ""
 
 			if (def.headers != "NONE") text += "headers = ${def.headers}\n"

@@ -32,10 +32,13 @@ fun String.fullName(meta: SdkConfig) = when {
 		else -> "${meta.appId}.$this"
 }
 
+fun String.fromParent(proj: Project) = proj.parent.getTask(this)
+
 fun Project.sandbox(name: String): Project? {
 	// Creates a sandbox for applying plugins
 	try {
 		val proj = project(":$name")
+		proj.buildDir = file("build/")
 		proj.extensions.add(Constants.SDK_EXT, meta) // Give it the metadata object
 		return proj
 	} catch (e: Exception) {
