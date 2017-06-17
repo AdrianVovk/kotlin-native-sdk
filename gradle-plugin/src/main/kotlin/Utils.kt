@@ -78,7 +78,7 @@ fun Project.modTasksReport() {
 }
 
 class TasksReportProject(val proj: Project) : ProjectInternal by (proj as ProjectInternal) {
-	override fun getSubprojects(): Set<Project> {
-		return proj.subprojects.filter { !arrayOf("jvm", "native", "android").contains(it.name) }.toSet() // Filter out our subprojects
+	override fun getSubprojects(): Set<Project> = if (proj.subprojects.size == 1) proj.subprojects else {
+		proj.subprojects.filter { !arrayOf("jvm", "native", "android").contains(it.name) }.toSet() // Filter out our subprojects
 	}
 }
