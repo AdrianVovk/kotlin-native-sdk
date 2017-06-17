@@ -20,7 +20,7 @@ include("android")
 ```
 The first block gives Gradle the ability to find [Kotlin/Native](https://github.com/JetBrains/kotlin-native)
 
-The `include` statements enable configurations for the plugin. In other words, `include("native")` enables compilation for native targets, `include("jvm")` enables compilation for the JVM, etc.
+The `include` statements enable configurations for the plugin. In other words, `include("native")` enables compilation for native targets, `include("jvm")` enables compilation for the JVM, etc. (See note 1)
 
 Here is an example `build.gradle.kts` file:
 ```kotlin
@@ -33,7 +33,8 @@ sdk {
 	appId = "com.example.app" // ID of the application
 
 	debug = false // Tell the program to print out debug detail. DEFAULT: true
-	suppressPlatformWarning = true // Suppress the warning about excluded build platforms
+	suppressPlatformWarning = true // Suppress the warning about excluded build platforms. DEFAULT: false
+	modifyTasksReport = false // Allow this plugin to modify the ':tasks' task (See note 2). DEFAULT: true
 
 	inputDir = "sources/" // Currently adds one extra directory to compilation
 	outputDir = "customOut/" // Where to place binaries. DEFAULT: "out/"
@@ -117,3 +118,11 @@ To do this, use `-Pargs=""` with your build command and put your arguements in t
 `genMetadata`: Generate a metadata file containing build information for the SDK library (located at `build/sdk/metadata.kt`)
 
 `native:genDefs`: Generate def files for native interop (located at `build/sdk/nativeDefs/`)
+
+### Extra notes
+1: This project sandboxes all of its tasks to seperate subprojects. This fixes conflicts while still providing a way for the developer to access the tasks necessary.
+This causes the side-effect of the 'platform syntax' (`platform:task`).
+
+2: This plugin modifies the output of the `:tasks` task to *not* include subprojects. This fixes an issue where the sandboxing (See note 1) made the output messy.
+By default, if you are only running one of the platforms, this acts as if there is no sandbox and allows the tasks to show up in the root,
+but if you have multiple platforms enabled, this removes them (and only them) from the output. With this setup, any other subprojects will behave as expected.

@@ -42,7 +42,11 @@ open class SdkPlugin() : Plugin<Project> {
 			sandbox("native")?.configureKonan()
 			sandbox("jvm")?.configureJvm()
 			sandbox("android")?.configureAndroid()
+
+			//TODO: For all subprojects?
+			if (meta.modifyTasksReport) modTasksReport()
 		}
+
 		//TODO: Clean tasks
 	}
 

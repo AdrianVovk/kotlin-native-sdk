@@ -8,8 +8,9 @@ import org.gradle.api.internal.HasConvention
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.gradle.api.plugins.JavaPluginConvention
 
-import org.gradle.api.initialization.Settings
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.tasks.diagnostics.TaskReportTask
 
 internal fun Project.getTask(name: String) : Task {
 	val tasks = project.getTasksByName(name, false)
@@ -34,6 +35,10 @@ fun String.fullName(meta: SdkConfig) = when {
 }
 
 fun String.fromParent(proj: Project) = proj.parent.getTask(this)
+
+////////////////////////////////////////////////////////
+// Sandboxing
+////////////////////////////////////////////////////////
 
 fun Project.sandbox(name: String): Project? {
 	// Creates a sandbox for applying plugins
@@ -62,5 +67,18 @@ fun Project.sandbox(name: String): Project? {
 	} catch (e: UnknownProjectException) {
 		if (!meta.suppressPlatformWarning) println("[WARNING] Skipping support for $name. To use, add `include(\"$name\")` to settings.gradle")
 		return null
+	}
+}
+
+fun Project.modTasksReport() {
+	// Override `tasks` task so it doesn't include subprojects
+	val tasksTask = getTask("tasks") as TaskReportTask
+	tasksTask.setProjects(setOf(TasksReportProject(this))) // Tell it to use our special project (which just wraps the real one) instead of the normal one
+	//tasksTask.description = tasksTask.description.removeSuffix(" (some of the displayed tasks may belong to subprojects).") + "." // Fix the description
+}
+
+class TasksReportProject(val proj: Project) : ProjectInternal by (proj as ProjectInternal) {
+	override fun getSubprojects(): Set<Project> {
+		return proj.subprojects.filter { !arrayOf("jvm", "native", "android").contains(it.name) }.toSet() // Filter out our subprojects
 	}
 }
