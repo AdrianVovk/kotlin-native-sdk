@@ -16,4 +16,9 @@ sdk {
 	}
 
 	jvm.main = "jvm.HelloKt"
+
+	android {
+		compileSdkVersion = 26
+		buildToolsVersion = "26.0.0"
+	}
 }

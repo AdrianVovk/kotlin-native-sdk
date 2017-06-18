@@ -39,7 +39,8 @@ fun Project.configureJvm() {
 	/////////////////
 
 	val sourceSet = java.sourceSets.getByName("main")
-	sourceSet.kotlin.srcDirs("$rootDir/src/jvm", "$rootDir/src/shared", "$buildDir/sdk")
+	sourceSet.kotlin.srcDirs("$rootDir/src/jvm", "$rootDir/src/shared", "$buildDir/sdk/gen/")
+	for (dir in meta.jvm.inputDirs) sourceSet.kotlin.srcDir(dir)
 	sourceSet.java.srcDir("$rootDir/src/jvm-ext/java")
 	sourceSet.resources.srcDir("$rootDir/src/jvm-ext/resources")
 
@@ -98,4 +99,9 @@ fun Project.configureJvm() {
 		group = run.group
 		description = run.description
 	}
-}
+
+	////////////////////////////////
+	// Apply custom configuration //
+	////////////////////////////////
+
+	(meta.jvm.buildConfig)()}

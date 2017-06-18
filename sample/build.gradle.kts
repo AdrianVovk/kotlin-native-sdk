@@ -1,4 +1,4 @@
-plugins {
+/*plugins {
 	id("substance.SdkPlugin") version "0.0.0"
 }
 
@@ -40,3 +40,4 @@ sdk {
 task<Exec>("update-sources") {
 	commandLine("./update-sources")
 }
+*/

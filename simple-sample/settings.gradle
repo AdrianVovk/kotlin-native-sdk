@@ -1,13 +1,11 @@
 pluginManagement.repositories {
-	maven {
-		url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/'
-	}
-	maven {
-		url '../out/maven-repo'
-	}
+	maven { url '../out/maven-repo' }
+
+	maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/' }
+	maven { url 'https://maven.google.com' }
 	gradlePluginPortal()
 }
 
 include("native")
 include("jvm")
-//include(":andoid")
+include("android")

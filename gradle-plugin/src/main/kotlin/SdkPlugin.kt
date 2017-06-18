@@ -12,6 +12,7 @@ object Constants {
 
 	const val METADATA_TASK = "genMetadata"
 	const val NATIVE_DEF_TASK = "genDefs"
+	const val ANDROID_MANIFEST_TASK = "genManifest"
 	const val MOVE_TASK = "moveOutputs"
 
 	const val GENERIC_BUILD_TASK = "build"

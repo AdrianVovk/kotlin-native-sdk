@@ -19,14 +19,16 @@ defaultTasks("build", "publish")
 repositories {
 	gradleScriptKotlin()
 	maven { setUrl("https://dl.bintray.com/jetbrains/kotlin-native-dependencies") }
+	google()
 }
 dependencies {
-	compile(kotlinModule("stdlib")) // Include Kotlin Standard Library
-	compile(gradleApi()) // Include the Gradle API
-	compile(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
+	implementation(kotlinModule("stdlib")) // Include Kotlin Standard Library
+	implementation(gradleApi()) // Include the Gradle API
+	implementation(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
 
-	compile("org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.2")
-	compile("org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-5")
+	compile("org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.2") // Kotlin-Native
+	compile("org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-5") // Kotlin-JVM (and Kotlin-Android)
+	compile("com.android.tools.build:gradle:3.0.0-alpha4") // Android
 }
 
 task<Copy>("move-output") {
@@ -61,7 +63,7 @@ pluginBundle {
   website = "http://www.github.com/AdrianVovk/kotlin-native-sdk/tree/sdk"
   vcsUrl = "https://github.com/AdrianVovk/kotlin-native-sdk.git"
   description = "Gradle Plugin for multi-platform compilation"
-  tags = listOf("substance","kotlin","kotlin-native")
+  tags = listOf("substance", "kotlin", "kotlin-native", "jvm")
 
   this.plugins {
     "SdkPlugin" {

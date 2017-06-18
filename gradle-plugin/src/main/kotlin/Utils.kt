@@ -12,6 +12,13 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.tasks.diagnostics.TaskReportTask
 
+import com.android.build.gradle.api.AndroidSourceSet
+import com.android.build.gradle.AppExtension
+
+////////////////////////////////////////////////////////
+// Tasks
+////////////////////////////////////////////////////////
+
 internal fun Project.getTask(name: String) : Task {
 	val tasks = project.getTasksByName(name, false)
 	return if (tasks.isEmpty()) {
@@ -21,12 +28,15 @@ internal fun Project.getTask(name: String) : Task {
 	}
 }
 
+fun String.fromParent(proj: Project) = proj.parent.getTask(this)
+
+////////////////////////////////////////////////////////
+// Metadata
+////////////////////////////////////////////////////////
+
 internal fun <T> Project.ext(name: String): T = extensions.findByName(name) as T
 internal val Project.meta	get() = ext<SdkConfig>(Constants.SDK_EXT)
 internal val Task.meta		get() = project.meta
-
-val SourceSet.kotlin		get() = ((this as HasConvention).convention.plugins["kotlin"] as KotlinSourceSet).kotlin
-val Project.java 			get() = convention.getPlugin(JavaPluginConvention::class.java)
 
 fun String.fullName(meta: SdkConfig) = when {
 		startsWith("${meta.appId}.") -> this
@@ -34,7 +44,15 @@ fun String.fullName(meta: SdkConfig) = when {
 		else -> "${meta.appId}.$this"
 }
 
-fun String.fromParent(proj: Project) = proj.parent.getTask(this)
+////////////////////////////////////////////////////////
+// Source Sets
+////////////////////////////////////////////////////////
+
+private val Any.sourceSetKotlin		get() = ((this as HasConvention).convention.plugins["kotlin"] as KotlinSourceSet).kotlin
+val SourceSet.kotlin				get() = sourceSetKotlin
+val AndroidSourceSet.kotlin			get() = sourceSetKotlin
+val Project.java 					get() = convention.getPlugin(JavaPluginConvention::class.java)
+val Project.android					get() = ext<AndroidExtension>("android")
 
 ////////////////////////////////////////////////////////
 // Sandboxing
@@ -82,3 +100,9 @@ class TasksReportProject(val proj: Project) : ProjectInternal by (proj as Projec
 		proj.subprojects.filter { !arrayOf("jvm", "native", "android").contains(it.name) }.toSet() // Filter out our subprojects
 	}
 }
+
+////////////////////////////////////////////////////////
+// Misc.
+////////////////////////////////////////////////////////
+
+typealias AndroidExtension = AppExtension

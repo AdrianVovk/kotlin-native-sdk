@@ -7,7 +7,7 @@ import org.gradle.script.lang.kotlin.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 fun Project.configureKonan() {
-	pluginManager.apply(KonanPlugin::class.java) // Apply the Kotlin/Native build plugin
+	pluginManager.apply("konan") // Apply the Kotlin/Native build plugin
 
 	val normAppName = meta.appName.split(" ", "_").map { it.capitalize()  }.joinToString("").capitalize()
 
@@ -30,8 +30,8 @@ fun Project.configureKonan() {
 		normAppName {
 			inputDir("$rootDir/src/native/")
 			inputDir("$rootDir/src/shared")
-			if (meta.inputDir != "NONE") inputDir("$rootDir/${meta.inputDir}")
-			inputFiles("$buildDir/sdk/metadata.kt") // Include generated metadata
+			for (dir in meta.native.inputDirs) inputDir("$rootDir/$dir")
+			inputFiles("$buildDir/sdk/gen/metadata.kt") // Include generated metadata
 
 			outputDir("$rootDir/${meta.outputDir}")
 
@@ -95,6 +95,12 @@ fun Project.configureKonan() {
 		group = run.group
 		description = run.description
 	}
+
+	////////////////////////////////
+	// Apply custom configuration //
+	////////////////////////////////
+
+	(meta.native.buildConfig)()
 }
 
 open class GenDefsTask : DefaultTask() {
