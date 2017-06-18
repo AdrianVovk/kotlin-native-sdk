@@ -13,12 +13,14 @@ object Constants {
 	const val METADATA_TASK = "genMetadata"
 	const val NATIVE_DEF_TASK = "genDefs"
 	const val ANDROID_MANIFEST_TASK = "genManifest"
+	const val ANDROID_SDK_TASK = "installSdk"
 	const val MOVE_TASK = "moveOutputs"
 
 	const val GENERIC_BUILD_TASK = "build"
 	const val GENERIC_RUN_TASK = "run"
 
 	const val RUN_ARGUMENTS = "args"
+	const val ANDROID_SDK_INSTALL_ARGUMENT = "sdk.dir"
 
 	const val KONAN_COMPILE_TASK = "buildNative"
 	const val KONAN_RUN_TASK = "runNative"

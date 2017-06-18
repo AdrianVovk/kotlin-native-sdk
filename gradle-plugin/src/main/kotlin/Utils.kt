@@ -15,6 +15,9 @@ import org.gradle.api.tasks.diagnostics.TaskReportTask
 import com.android.build.gradle.api.AndroidSourceSet
 import com.android.build.gradle.AppExtension
 
+import de.undercouch.gradle.tasks.download.DownloadExtension
+import de.undercouch.gradle.tasks.download.DownloadSpec
+
 ////////////////////////////////////////////////////////
 // Tasks
 ////////////////////////////////////////////////////////

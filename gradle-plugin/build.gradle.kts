@@ -20,11 +20,13 @@ repositories {
 	gradleScriptKotlin()
 	maven { setUrl("https://dl.bintray.com/jetbrains/kotlin-native-dependencies") }
 	google()
+	jcenter()
 }
 dependencies {
 	implementation(kotlinModule("stdlib")) // Include Kotlin Standard Library
 	implementation(gradleApi()) // Include the Gradle API
 	implementation(gradleScriptKotlinApi()) // Include the Gradle-Script-Kotlin API
+	implementation("de.undercouch:gradle-download-task:3.2.0") // Download task
 
 	compile("org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.2") // Kotlin-Native
 	compile("org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-5") // Kotlin-JVM (and Kotlin-Android)

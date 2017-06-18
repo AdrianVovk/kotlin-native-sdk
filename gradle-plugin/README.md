@@ -70,12 +70,39 @@ sdk {
 		linkerOpts = "" // Pass linker opts to Konan compiler
 		optimize = false // Make binaries smaller at the expense of compile time. DEFAULT: true
 
-		buildScript.dependencies {
-			compile("foo.bar.bas:Asdf:1.0.0")
+		configure {
+			// Configure the build file directly
+
+			dependencies {
+				compile("foo.bar.bas:Asdf:1.0.0")
+			}
 		}
 	}
 
 	jvm.main = "MainKt" // The main class to run for Java. DEFAULT: Is to be located in the SDK library. Set this manually for now
+	jvm.configure {
+		// Configure the build file directly
+
+		dependencies {
+			compile("foo.bar.bas:Asdf:1.0.0")
+		}
+	}
+
+	android {
+		compileSdkVersion = 26 // REQUIRED if the Android target is enabled. Acts the same as it does in the default Android gradle plugin
+		buildToolsVersion = "26.0.0" // REQUIRED if the Android target is enabled. Acts the same as it does in the default Android gradle plugin
+
+		androidConfigure {
+			// This is the same as the `android` configuration block in the standard Android plugin
+		}
+
+		configure {
+			// Configure the build file directly
+		}
+
+		useKotlinExtensions = false // Enables or disables the Android Kotlin Extensions library. DEFAULT: true
+		downloadSdk = true // Downloads the Android SDK if necessary. DEFAULT: false
+	}
 }
 ```
 

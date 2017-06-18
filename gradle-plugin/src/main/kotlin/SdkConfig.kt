@@ -12,6 +12,7 @@ open class SdkConfig(val project: Project) {
 
 	var outputDir = Constants.SDK_DEFAULT_OUTPUT_DIR
 
+
 	/////////////////////////////////////
 	// Shared Platform class
 	/////////////////////////////////////
@@ -81,6 +82,7 @@ open class SdkConfig(val project: Project) {
 	data class AndroidConf(val root: SdkConfig,
 		var directConfig: AndroidExtension.() -> Unit = {},
 		var useKotlinExtensions: Boolean = true,
+		var downloadSdk: Boolean = false,
 		var compileSdkVersion: Int = -1,
 		var buildToolsVersion: String = "NONE") : Platform() {
 
