@@ -3,11 +3,12 @@
   <groupId>sdk.plugin</groupId>
   <artifactId>gradle-plugin</artifactId>
   <versioning>
-    <release>0.0.0</release>
+    <release>0.0.1</release>
     <versions>
       <version>SNAPSHOT</version>
       <version>0.0.0</version>
+      <version>0.0.1</version>
     </versions>
-    <lastUpdated>20170620160240</lastUpdated>
+    <lastUpdated>20170620215650</lastUpdated>
   </versioning>
 </metadata>

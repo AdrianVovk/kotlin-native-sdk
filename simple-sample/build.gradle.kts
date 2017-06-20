@@ -1,5 +1,5 @@
 plugins {
-	id("substance.SdkPlugin") version "0.0.0"
+	id("substance.SdkPlugin") version "0.0.1"
 }
 
 sdk {
