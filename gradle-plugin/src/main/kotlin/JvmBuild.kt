@@ -104,4 +104,5 @@ fun Project.configureJvm() {
 	// Apply custom configuration //
 	////////////////////////////////
 
-	(meta.jvm.buildConfig)()}
+	(meta.jvm.buildConfig)()
+}

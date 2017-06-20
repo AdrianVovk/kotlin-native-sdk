@@ -109,3 +109,5 @@ class TasksReportProject(val proj: Project) : ProjectInternal by (proj as Projec
 ////////////////////////////////////////////////////////
 
 typealias AndroidExtension = AppExtension
+
+fun Project.download(action: DownloadSpec.() -> Unit) = ext<DownloadExtension>("download").configure(closureOf<DownloadSpec> { action() } )

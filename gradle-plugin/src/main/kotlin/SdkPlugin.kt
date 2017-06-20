@@ -7,7 +7,7 @@ import org.gradle.script.lang.kotlin.*
 object Constants {
 	const val SDK_EXT = "sdk"
 	const val SDK_DEFAULT_NAME = "SdkApplication"
-	const val SDK_DEFAULT_ID = "com.group.SdkApplication"
+	const val SDK_DEFAULT_ID = "com.group.myapp"
 	const val SDK_DEFAULT_OUTPUT_DIR = "out/"
 
 	const val METADATA_TASK = "genMetadata"
@@ -15,12 +15,14 @@ object Constants {
 	const val ANDROID_MANIFEST_TASK = "genManifest"
 	const val ANDROID_SDK_TASK = "installSdk"
 	const val MOVE_TASK = "moveOutputs"
+	const val CLEAN_TASK = "clean"
 
 	const val GENERIC_BUILD_TASK = "build"
 	const val GENERIC_RUN_TASK = "run"
 
 	const val RUN_ARGUMENTS = "args"
 	const val ANDROID_SDK_INSTALL_ARGUMENT = "sdk.dir"
+	const val ANDROID_SDK_LICENSES_AUTOACCEPT = "autoaccept"
 
 	const val KONAN_COMPILE_TASK = "buildNative"
 	const val KONAN_RUN_TASK = "runNative"
@@ -36,21 +38,20 @@ open class SdkPlugin() : Plugin<Project> {
 
 	override fun apply(project: Project): Unit = with(project) {
 		extensions.add(Constants.SDK_EXT, SdkConfig(this))
-		task<GenMetadataTask>(Constants.METADATA_TASK) {
-			description = "Generates a metadata class that gives the program access to build flags"
-			group = "build setup"
-		}
+		task<GenMetadataTask>(Constants.METADATA_TASK)
 
 		afterEvaluate {
 			sandbox("native")?.configureKonan()
 			sandbox("jvm")?.configureJvm()
 			sandbox("android")?.configureAndroid()
 
-			//TODO: For all subprojects?
 			if (meta.modifyTasksReport) modTasksReport()
 		}
 
-		//TODO: Clean tasks
+		task<Delete>(Constants.CLEAN_TASK) {
+			delete(buildDir)
+			delete(meta.outputDir)
+		}
 	}
 
 }

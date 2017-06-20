@@ -68,10 +68,7 @@ fun Project.configureKonan() {
 
 	// Def files
 
-	task<GenDefsTask>(Constants.NATIVE_DEF_TASK) {
-		description = "Generates library defenition files for Kotlin/Native"
-		group = "build setup"
-	}
+	task<GenDefsTask>(Constants.NATIVE_DEF_TASK)
 	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
 	for (interop in meta.native.interops) {
 		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
@@ -104,6 +101,12 @@ fun Project.configureKonan() {
 }
 
 open class GenDefsTask : DefaultTask() {
+
+	init {
+		description = "Generates library defenition files for Kotlin/Native"
+		group = "build setup"
+	}
+
 	@TaskAction fun generate() {
 		for (def in meta.native.defFilesToGenerate) {
 			val outputFile = with(project) {

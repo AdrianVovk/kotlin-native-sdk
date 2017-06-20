@@ -5,11 +5,9 @@ This project is a gradle plugin for using the Substance SDK. This will eventuall
 ##### `settings.gradle`
 Configure the `settings.gradle` file like so:
 ```groovy
-// Let the compiler find Kotlin-Native
 pluginManagement.repositories {
-	maven {
-		url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/'
-	}
+	maven { url 'https://dl.bintray.com/jetbrains/kotlin-native-dependencies/' } // Let the compiler find Kotlin-Native
+	maven { url 'https://maven.google.com' } // Let the compiler find the Android build tools
 	gradlePluginPortal()
 }
 
@@ -18,7 +16,7 @@ include("native")
 include("jvm")
 include("android")
 ```
-The first block gives Gradle the ability to find [Kotlin/Native](https://github.com/JetBrains/kotlin-native)
+The first block gives Gradle the ability to find [Kotlin/Native](https://github.com/JetBrains/kotlin-native) and the Android SDK.
 
 The `include` statements enable configurations for the plugin. In other words, `include("native")` enables compilation for native targets, `include("jvm")` enables compilation for the JVM, etc. (See note 1)
 
@@ -140,14 +138,14 @@ This is the default directory structure:
 
 `buildJvm` or `jvm:build`: Build the program for the JVM
 
-`buildAndroid` or `android:build`: COMING SOON
+`buildAndroid` or `android:build`: Build the program for Android
 
 ##### Running
 `runNative` or `native:run`: Build, then run the program for native targets (using Kotlin/Native)
 
 `runJvm` or `jvm:run`: Build, then run the program for the JVM
 
-`runAndroid` or `android:run`: COMING SOON
+`runAndroid` or `android:run`: Run the program on Android
 
 When using the run tasks, it is possible to pass arguments to the program.
 To do this, use `-Pargs=""` with your build command and put your arguements in the quotes.
@@ -157,7 +155,10 @@ To do this, use `-Pargs=""` with your build command and put your arguements in t
 
 `native:genDefs`: Generate def files for native interop (located at `build/sdk/nativeDefs/`)
 
-`native:genManifest`: Generate the Android manifest (located at `build/sdk/android/AndroidManifest.xml`)
+~~`android:genManifest`: Generate the Android manifest (located at `build/sdk/android/AndroidManifest.xml`)~~ COMING SOON
+
+`android:installSdk`: Download and install the Android SDK to the default location for your system
+	- Alternatively, use `-Psdk.dir=""` with your build command and put your desired installation location in the quotes
 
 ### Extra notes
 1: This project sandboxes all of its tasks to seperate subprojects. This fixes conflicts while still providing a way for the developer to access the tasks necessary.

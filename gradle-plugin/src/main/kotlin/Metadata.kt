@@ -5,6 +5,11 @@ import org.gradle.api.tasks.*
 
 open class GenMetadataTask : DefaultTask() {
 
+	init {
+		description = "Generates a metadata class that gives the program access to build flags"
+		group = "build setup"
+	}
+
 	@TaskAction fun generate() {
 		val outputFile = with(project) { file("$buildDir/sdk/gen/metadata.kt") }
 		outputFile.getParentFile().mkdirs() // Create directory

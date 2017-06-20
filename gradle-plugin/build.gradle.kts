@@ -1,20 +1,21 @@
-import org.gradle.api.tasks.Copy
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
-import groovy.util.*
-
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.1.2-5"
 	id("maven-publish")
 	id("java-gradle-plugin")
-	id("org.jetbrains.dokka") version "0.9.14-eap-2"
 	id("com.gradle.plugin-publish") version "0.9.7"
+
+	id("org.jetbrains.dokka") version "0.9.14-eap-2" // TODO: Use
+	id("org.nosphere.honker") version "0.3.0" //TODO: Use
 }
 
 group = "sdk.plugin"
 version = "0.0.0"
 
 defaultTasks("build", "publish")
+
+/////////////////////////////////////////////////////////////////////
+// Dependencies
+/////////////////////////////////////////////////////////////////////
 
 repositories {
 	gradleScriptKotlin()
@@ -32,6 +33,10 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-5") // Kotlin-JVM (and Kotlin-Android)
 	compile("com.android.tools.build:gradle:3.0.0-alpha4") // Android
 }
+
+/////////////////////////////////////////////////////////////////////
+// Moving Output
+/////////////////////////////////////////////////////////////////////
 
 task<Copy>("move-output") {
 	dependsOn("jar")

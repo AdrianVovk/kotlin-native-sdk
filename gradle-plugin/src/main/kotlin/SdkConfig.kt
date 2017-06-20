@@ -3,7 +3,7 @@ package sdk.plugin
 import org.gradle.api.Project
 
 open class SdkConfig(val project: Project) {
-	var debug = true // Debugging by default, "relea	se" task changes it
+	var debug = true // Debugging by default, "release" task changes it
 	var suppressPlatformWarning = false // Suppreses warning if platform isn't included in build
 	var modifyTasksReport = true // Modify the output of the `tasks` task
 
