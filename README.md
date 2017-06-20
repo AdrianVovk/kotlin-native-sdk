@@ -2,7 +2,7 @@
 The Substance SDK is a set of tooling and libraries that are designed for simplified multi-platform development
 
 ## Gradle Plugin
-The Gradle Plugin for compilation of SDK Projects can be found at [gradle-plugin](gradle-plugin/README.md)
+The Gradle Plugin for compilation of SDK Projects can be found at [gradle-plugin/](gradle-plugin/README.md)
 
 ## Library
 The SDK Library is a multiplatform library for providing shared APIs between platforms. It can be found at [sdk/](sdk/README.md). **COMING SOON**
