@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "sdk.plugin"
-version = "0.0.0"
+version = "0.0.1"
 
 defaultTasks("build", "publish")
 
@@ -67,10 +67,10 @@ gradlePlugin {
 }
 
 pluginBundle {
-  website = "http://www.github.com/AdrianVovk/kotlin-native-sdk/tree/sdk"
-  vcsUrl = "https://github.com/AdrianVovk/kotlin-native-sdk.git"
+  website = "https://github.com/SubstanceMobile/sdk"
+  vcsUrl = "https://github.com/SubstanceMobile/sdk.git"
   description = "Gradle Plugin for multi-platform compilation"
-  tags = listOf("substance", "kotlin", "kotlin-native", "jvm")
+  tags = listOf("substance", "kotlin", "kotlin-native", "jvm", "android", "android-sdk")
 
   this.plugins {
     "SdkPlugin" {
