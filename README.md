@@ -1,24 +1,19 @@
-# Kotlin/Native SDK
-This repo shows off Kotlin/Native and the Substance SDK with a simple GTK Program.
+# Substance SDK
+The Substance SDK is a set of tooling and libraries that are designed for simplified multi-platform development
 
-## Building
-You have two ways to build this:
+## Gradle Plugin
+The Gradle Plugin for compilation of SDK Projects can be found at (gradle-plugin/)[gradle-plugin/README.md]
 
-*__Note:__ The first build will take a few minutes and requires a bit of RAM. Subsequent builds require less ram and are faster*
+## Library
+The SDK Library is a multiplatform library for providing shared APIs between platforms. It can be found at (sdk/)[sdk/README.md]
 
-##### Gradle
+## KIDE Plugin
+The plugin for providing build support for the KIDE can be found at (kide-plugin/)[kide-plugin/README.md]. *COMING SOON*
 
-This uses the Kotlin/Native Gradle plugin to build the project.
+## Samples
+You can currently find two samples for the Substance SDK. The full UI sample found at (sample/)[sample/README.md], and a more multiplatform sample at (simple-sample/)[simple-sample/README.md]
 
-To build, run `scripts/gradlew build`. The built binary will be placed in the `out/` folder.
+Eventually, these two samples will be merged together and will show off all of the features of the SDK Library and Gradle Plugin.
 
-To clean the working directory, run `scripts/gradlew clean`.
-
-*Depending on your configuration, it might be easier to replace `scripts/gradlew` with `gradle`*
-
-##### Included Build script
-
-To build, run `scripts/build` and follow the prompts. The builr binary will be placed in the	`out/` folder.
-Subsequent builds will ask if you want to rebuild the libraries. If you are experiencing issues with compilation, try answering `y` to these prompts.
-
-To clean the working directory, run `scripts/clean`.
+## Scripts
+The scripts folder contains a gradle wrapper installation. If you do not have a standalone gradle installation, use `scripts/gradlew`

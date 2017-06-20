@@ -7,10 +7,9 @@ open class SdkConfig(val project: Project) {
 	var suppressPlatformWarning = false // Suppreses warning if platform isn't included in build
 	var modifyTasksReport = true // Modify the output of the `tasks` task
 
-	var appName = Constants.SDK_DEFAULT_NAME
-	var appId = Constants.SDK_DEFAULT_ID
-
-	var outputDir = Constants.SDK_DEFAULT_OUTPUT_DIR
+	var appName = "Application"
+	var appId = "NONE"
+	var outputDir = "out/"
 
 
 	/////////////////////////////////////
@@ -82,7 +81,6 @@ open class SdkConfig(val project: Project) {
 	data class AndroidConf(val root: SdkConfig,
 		var directConfig: AndroidExtension.() -> Unit = {},
 		var useKotlinExtensions: Boolean = true,
-		var downloadSdk: Boolean = false,
 		var compileSdkVersion: Int = -1,
 		var buildToolsVersion: String = "NONE") : Platform() {
 

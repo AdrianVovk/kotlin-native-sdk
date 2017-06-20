@@ -68,8 +68,8 @@ fun Project.configureKonan() {
 
 	// Def files
 
-	task<GenDefsTask>(Constants.NATIVE_DEF_TASK)
-	build.dependsOn(Constants.NATIVE_DEF_TASK) // Add def task to the build process
+	task<GenDefsTask>(Constants.KONAN_DEF_TASK)
+	build.dependsOn(Constants.KONAN_DEF_TASK) // Add def task to the build process
 	for (interop in meta.native.interops) {
 		getTask("gen${interop.name.capitalize()}InteropStubs").mustRunAfter(Constants.NATIVE_DEF_TASK) // Generate def file before building
 	}

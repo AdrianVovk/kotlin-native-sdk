@@ -20,6 +20,7 @@ The first block gives Gradle the ability to find [Kotlin/Native](https://github.
 
 The `include` statements enable configurations for the plugin. In other words, `include("native")` enables compilation for native targets, `include("jvm")` enables compilation for the JVM, etc. (See note 1)
 
+##### `build.gradle.kts`
 Here is an example `build.gradle.kts` file:
 ```kotlin
 plugins {
@@ -30,12 +31,7 @@ sdk {
 	appName = "My App" // Name of the application
 	appId = "com.example.app" // ID of the application
 
-	debug = false // Tell the program to print out debug detail. DEFAULT: true
-	suppressPlatformWarning = true // Suppress the warning about excluded build platforms. DEFAULT: false
-	modifyTasksReport = false // Allow this plugin to modify the ':tasks' task (See note 2). DEFAULT: true
-
-	inputDir = "sources/" // Currently adds one extra directory to compilation
-	outputDir = "customOut/" // Where to place binaries. DEFAULT: "out/"
+	suppressPlatformWarning = true
 
 	windows {
 		"windows.Main" {
@@ -46,41 +42,21 @@ sdk {
 	}
 
 	native {
-		interop("name", defFile = "path/to/def/file.def", pkg = "interop.name") // Include a def file as interop
-		interop("another", defFile = "path/to/another/file.def", pkg = "interop.another") // Can be run many times
+		interop("myInterop", defFile = "path/to/another/file.def", pkg = "interop.another") // Can be run many times
 		interop("generatedDef", pkg = "interop.generated") {
 			headers("header1.h", "header2.h", "header3.h")
-
-			compilerOpts = "-I. -I/usr/include/something"
-			// or use compilerOpts("-I.", "-I/usr/include/something")
-
-			// this C code is included in the bindings
+			compilerOpts("-I.", "-I/usr/include/something")
+			excludeDependentModules = true
 			includeC = """
 				static inline int getErrno() {
 				    return errno;
 				}
 			"""
-
-			headerFilter = "SomeLibrary/**"
-			excludeDependentModules = true
-		}
-
-		linkerOpts = "" // Pass linker opts to Konan compiler
-		optimize = false // Make binaries smaller at the expense of compile time. DEFAULT: true
-
-		configure {
-			// Configure the build file directly
-
-			dependencies {
-				compile("foo.bar.bas:Asdf:1.0.0")
-			}
 		}
 	}
 
-	jvm.main = "MainKt" // The main class to run for Java. DEFAULT: Is to be located in the SDK library. Set this manually for now
+	jvm.main = "MainKt"
 	jvm.configure {
-		// Configure the build file directly
-
 		dependencies {
 			compile("foo.bar.bas:Asdf:1.0.0")
 		}
@@ -92,17 +68,56 @@ sdk {
 
 		androidConfigure {
 			// This is the same as the `android` configuration block in the standard Android plugin
+			defaultConfig {
+				applicationId("com.example.app.android")
+				minSdkVersion(15)
+				targetSdkVersion(26)
+				versionCode(1)
+				versionName("1.0.0")
+			}
 		}
-
 		configure {
-			// Configure the build file directly
+			dependencies {
+			    compile 'com.android.support:appcompat-v7:+'
+			    compile 'com.android.support:design:+'
+			    compile 'com.android.support.constraint:constraint-layout:+'
+			    compile 'com.android.support:support-v4:+'
+			    compile 'com.android.support:support-vector-drawable:+'
+			}
 		}
-
-		useKotlinExtensions = false // Enables or disables the Android Kotlin Extensions library. DEFAULT: true
-		downloadSdk = true // Downloads the Android SDK if necessary. DEFAULT: false
 	}
 }
 ```
+
+Here is the compilete API that is acceccable from within the `sdk` block:
+- `appName = String`: Name of the application. Default: "Application"
+- `appId = String`: ID of the application. REQUIRED.
+- `debug = Boolean`: Tells the program to print out debug information. ~~`release` tasks disable this~~ COMING SOON. DEFAULT: true
+- `suppressPlatformWarning = Boolean`: Suppresses the warnings that occur when platforms aren't enabled. DEFAULT: false
+- `modifyTasksReport = Boolean`: Modifies the output of `:tasks` to clean up the output. See note 2 for more details. DEFAULT: true
+	- //TODO: Move details here
+- `outputDir = String`: Specify a directory to put compiled binaries into. DEFAULT: out/
+- `(native, jvm, or android).configure {}`: Provides a way to access the project directly, to be configured as if itwere inside a separate `build.gradle.kts` file.
+- `(native, jvm, or android).inputDir(String)`: Adds an extra directory to the platform
+- `native.optimize = Boolean`: Makes smaller binaries at the expense of compile time
+- `native.linkerOpts = String`: Passes linker options to Kotlin/Native
+- `native.interop(name: String, defFile = String, pkg = String /* optional */)`: Adds an interop configuration for a def file
+- `native.interop(name: String, pkg = String /* optional */) {}`: Generates a def file (see `native:genDefs`) and adds an interop configuration for it. Functions from within the block:
+	- `headers = String` or `headers(vararg String)`: Specifies which headers to use
+	- `compilerOpts = String` or `compilerOpts(vararg String)`: Specifies extra compiler options to use
+	- `headerFilter = String`: Specifies a header filter to use
+	- `excludeDependentModules = Boolean`: Excludes modules that aren't directly specified by `headers`
+	- `includeC = String`: Includes C code to be generated as interop.
+- `jvm.main = String`: The main class to be used for the JVM. REQUIRED (if using the JVM without the SDK library). DEFUALT: Substance SDK library default loader
+- `android.useKotlinExtensions = Boolean`: Applies the Kotlin Extensions gradle plugin
+- `android.compileSdkVersion`: Acts the same as it does in the default Android plugin. REQUIRED (if using Android)
+- `android.buildToolsVersion`: Acts the same as it does in the default Android plugin. REQUIRED (if using Android)
+- `android.androidConfigure {}`: Configure the Android plugin directly
+- `windows."name"()`: Tell the application that it supports the window at 'name'. (Only if using the SDK library)
+- `windows."name" {}`: Tell the application that it supports the window at 'name'. (Only if using the SDK library). Functions from within the block:
+	- `main()`: Tell the application that this window is the main window.
+
+*__NOTE:__ Any `.` can also represent a block. So `a.b` can also represent `a { b }`*
 
 ### Project structure
 The SDK plugin has a custom project structure for the multi-language build process.
@@ -120,7 +135,7 @@ This is the default directory structure:
 			- `resources/`: Contains resource files to be compiled
 		- `android/`: Contains files to be compiled for Android
 		- `android-ext/`: Contains extra files for Android
-			- `AndroidManifest.xml`: The Android manifest (if it isn't being generated by the build script)
+			- `AndroidManifest.xml`: The Android manifest ~~(if it isn't being generated by the build script)~~
 			- `java/`: Contains Java source files to be compiled
 			- ~~`ndk/`: Contains Kotlin/Native (or C, depending on configuration) source files to be compiled for the NDK~~
 			- `jni/`: Contains source for the JNI
@@ -147,8 +162,7 @@ This is the default directory structure:
 
 `runAndroid` or `android:run`: Run the program on Android
 
-When using the run tasks, it is possible to pass arguments to the program.
-To do this, use `-Pargs=""` with your build command and put your arguements in the quotes.
+When using a run task (excluding Android), use `-Pargs="[ARGUMENTS]"` to pass arguments to the program
 
 ##### Extras
 `genMetadata`: Generate a metadata file containing build information for the SDK library (located at `build/sdk/gen/metadata.kt`)
@@ -158,7 +172,8 @@ To do this, use `-Pargs=""` with your build command and put your arguements in t
 ~~`android:genManifest`: Generate the Android manifest (located at `build/sdk/android/AndroidManifest.xml`)~~ COMING SOON
 
 `android:installSdk`: Download and install the Android SDK to the default location for your system
-	- Alternatively, use `-Psdk.dir=""` with your build command and put your desired installation location in the quotes
+	- Use `-Psdk.dir=[DIR]` to specify a custom installation location for the Android SDK. Put the directory in quotes if it contains spaces.
+	- Use `-Pautoaccept-licenses=y` to automatically accept all Android SDK Licenses, which is useful for headless CI servers
 
 ### Extra notes
 1: This project sandboxes all of its tasks to seperate subprojects. This fixes conflicts while still providing a way for the developer to access the tasks necessary.

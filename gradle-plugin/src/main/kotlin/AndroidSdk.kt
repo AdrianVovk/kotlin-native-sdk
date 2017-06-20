@@ -6,6 +6,7 @@ import org.gradle.script.lang.kotlin.*
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.SequenceInputStream
 import java.util.Properties
 import groovy.util.XmlParser
 import groovy.util.Node
@@ -76,13 +77,13 @@ fun Project.configureAndroidSdk() : Boolean {
 			into(path)
 		}
 
-		val doAcceptLicenses = task<Exec>("acceptAndroidSdkLicenses") {
+		val acceptLicenses = task<Exec>("acceptAndroidSdkLicenses") {
 			dependsOn(extractSdk)
 			workingDir = path
-			standardInput = if ((parent.properties[Constants.ANDROID_SDK_LICENSES_AUTOACCEPT] as String?) == "y") {
+			standardInput = if ((parent.properties[Constants.ANDROID_SDK_LICENSES_ARGUMENT] as String?) == "y") {
 				"y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n".byteInputStream() // Accept everything
 			} else {
-				System.`in`
+				SequenceInputStream("y\n".byteInputStream(), System.`in`)
 			}
 			commandLine("tools/bin/sdkmanager", "--licenses")
 		}
