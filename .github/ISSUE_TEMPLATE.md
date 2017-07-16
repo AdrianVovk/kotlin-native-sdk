@@ -1,6 +1,4 @@
-[ Any line starting with a # is a heading ]::
-[ Please edit the content below the headings, as the text there is just an example ]::
-
+[ If this is a feature request, remove this template and explain the feature you want to be added ]::
 #### Affected subprojects
 gradle-plugin, kide-plugin
 
